@@ -1,0 +1,270 @@
+% Profit-Aware Order Fulfilment Agent -- kaynakça (Paper Draft I ve final makale)
+% annote alanı: kaynağın makalede nerede ve ne için kullanılacağı.
+% Gruplar: (1) Fulfilment ve stok  (2) Contextual bandit  (3) Pekiştirmeli öğrenme
+%          (4) Oyun yapay zekası ve Utility AI  (5) Yardımcı yöntemler  (6) Veri ve deney metodolojisi
+
+% ---------------------------------------------------------------- (1) Fulfilment ve stok
+@article{xu2009reevaluating,
+  author  = {Xu, Ping Josephine and Allgor, Russell and Graves, Stephen C.},
+  title   = {Benefits of Reevaluating Real-Time Order Fulfillment Decisions},
+  journal = {Manufacturing \& Service Operations Management},
+  volume  = {11},
+  number  = {2},
+  pages   = {340--355},
+  year    = {2009},
+  annote  = {Giriş ve Related Work: çok depolu e-ticarette sipariş anında verilen karşılama kararının toplam maliyete etkisi; problemimizin doğrudan endüstriyel karşılığı.}
+}
+
+@article{acimovic2015fulfillment,
+  author  = {Acimovic, Jason and Graves, Stephen C.},
+  title   = {Making Better Fulfillment Decisions on the Fly in an Online Retail Environment},
+  journal = {Manufacturing \& Service Operations Management},
+  volume  = {17},
+  number  = {1},
+  pages   = {34--51},
+  year    = {2015},
+  annote  = {Related Work: miyop (yalnızca anlık kargo maliyetine bakan) karar ile gelecekteki stok etkisini hesaba katan karar arasındaki fark. Opportunity cost teriminin gerekçesi ve "nearest/lowest-cost" baseline'ının neden yetersiz kaldığı.}
+}
+
+@article{jasin2015correlated,
+  author  = {Jasin, Stefanus and Sinha, Amitabh},
+  title   = {An {LP}-Based Correlated Rounding Scheme for Multi-Item Ecommerce Order Fulfillment},
+  journal = {Operations Research},
+  volume  = {63},
+  number  = {6},
+  year    = {2015},
+  annote  = {Related Work: çok ürünlü siparişlerde split shipment maliyeti; optimizasyon tabanlı yaklaşımlar (bizim yaklaşımımız öğrenen ve açıklanabilir bir ajan).}
+}
+
+@book{silver2017inventory,
+  author    = {Silver, Edward A. and Pyke, David F. and Thomas, Douglas J.},
+  title     = {Inventory and Production Management in Supply Chains},
+  edition   = {4},
+  publisher = {CRC Press},
+  year      = {2017},
+  annote    = {Simülatör: periyodik gözden geçirme (R,S) stok yenileme politikası, lead time.}
+}
+
+@article{gijsbrechts2022drl,
+  author  = {Gijsbrechts, Joren and Boute, Robert N. and Van Mieghem, Jan A. and Zhang, Dennis J.},
+  title   = {Can Deep Reinforcement Learning Improve Inventory Management? Performance on Lost Sales, Dual-Sourcing, and Multi-Echelon Problems},
+  journal = {Manufacturing \& Service Operations Management},
+  volume  = {24},
+  number  = {3},
+  year    = {2022},
+  annote  = {Related Work: stok kararlarında RL'nin klasik sezgisel kurallarla karşılaştırılması; RL'nin her zaman kazanmadığı, iyi bir baseline gerektiği.}
+}
+
+@article{boute2022roadmap,
+  author  = {Boute, Robert N. and Gijsbrechts, Joren and van Jaarsveld, Willem and Vanvuchelen, Nathalie},
+  title   = {Deep Reinforcement Learning for Inventory Control: A Roadmap},
+  journal = {European Journal of Operational Research},
+  volume  = {298},
+  number  = {2},
+  year    = {2022},
+  annote  = {Related Work ve Discussion: tedarik zinciri kararlarında RL kullanımının açık sorunları (açıklanabilirlik, değerlendirme).}
+}
+
+% ---------------------------------------------------------------- (2) Contextual bandit
+@inproceedings{li2010linucb,
+  author    = {Li, Lihong and Chu, Wei and Langford, John and Schapire, Robert E.},
+  title     = {A Contextual-Bandit Approach to Personalized News Article Recommendation},
+  booktitle = {Proceedings of the 19th International Conference on World Wide Web (WWW)},
+  pages     = {661--670},
+  year      = {2010},
+  doi       = {10.1145/1772690.1772758},
+  annote    = {Yöntem: LinUCB algoritması (disjoint ve hybrid). Adaptif ağırlık profili seçiminin temel referansı.}
+}
+
+@inproceedings{chu2011linear,
+  author    = {Chu, Wei and Li, Lihong and Reyzin, Lev and Schapire, Robert},
+  title     = {Contextual Bandits with Linear Payoff Functions},
+  booktitle = {Proceedings of the 14th International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  year      = {2011},
+  annote    = {Yöntem: lineer ödüllü contextual bandit için teorik garanti (LinUCB'nin kuramsal dayanağı).}
+}
+
+@inproceedings{agrawal2013thompson,
+  author    = {Agrawal, Shipra and Goyal, Navin},
+  title     = {Thompson Sampling for Contextual Bandits with Linear Payoffs},
+  booktitle = {Proceedings of the 30th International Conference on Machine Learning (ICML)},
+  year      = {2013},
+  annote    = {Yöntem / alternatif politika: lineer Thompson Sampling (LinUCB'ye karşı ikinci adaptif politika).}
+}
+
+@book{lattimore2020bandit,
+  author    = {Lattimore, Tor and Szepesv{\'a}ri, Csaba},
+  title     = {Bandit Algorithms},
+  publisher = {Cambridge University Press},
+  year      = {2020},
+  annote    = {Problem formülasyonu: bandit ile tam RL arasındaki fark; banditin miyop olması (tek adımlık karar) ve gecikmeli ödül.}
+}
+
+% ---------------------------------------------------------------- (3) Pekiştirmeli öğrenme
+@book{sutton2018rl,
+  author    = {Sutton, Richard S. and Barto, Andrew G.},
+  title     = {Reinforcement Learning: An Introduction},
+  edition   = {2},
+  publisher = {MIT Press},
+  year      = {2018},
+  annote    = {Problem formülasyonu: durum, eylem, ödül; Q-Learning. Vize sonrası RL seçeneği için.}
+}
+
+@article{mnih2015dqn,
+  author  = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and others},
+  title   = {Human-Level Control through Deep Reinforcement Learning},
+  journal = {Nature},
+  volume  = {518},
+  number  = {7540},
+  pages   = {529--533},
+  year    = {2015},
+  doi     = {10.1038/nature14236},
+  annote  = {Vize sonrası seçenek: DQN (Q-Learning + yapay sinir ağı); föyde Zorunlu AI 2 için kabul edilen yöntemlerden.}
+}
+
+@article{schulman2017ppo,
+  author  = {Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+  title   = {Proximal Policy Optimization Algorithms},
+  journal = {arXiv preprint arXiv:1707.06347},
+  year    = {2017},
+  annote  = {Vize sonrası seçenek: PPO (ML-Agents eğitici algoritması, derste H5).}
+}
+
+@article{juliani2018unity,
+  author  = {Juliani, Arthur and Berges, Vincent-Pierre and Teng, Ervin and Cohen, Andrew and Harper, Jonathan and Elion, Chris and Goy, Chris and Gao, Yuan and Henry, Hunter and Mattar, Marwan and Lange, Danny},
+  title   = {Unity: A General Platform for Intelligent Agents},
+  journal = {arXiv preprint arXiv:1809.02627},
+  year    = {2018},
+  annote  = {Simülatör ve yöntem: Unity ML-Agents platformu; oyun motorunun yapay zekâ araştırma ortamı olarak kullanılması.}
+}
+
+% ---------------------------------------------------------------- (4) Oyun yapay zekası ve Utility AI
+@book{millington2019aigames,
+  author    = {Millington, Ian},
+  title     = {AI for Games},
+  edition   = {3},
+  publisher = {CRC Press},
+  year      = {2019},
+  annote    = {Dersin ana kaynağı. Related Work ve Game AI Connection: oyunlarda karar verme, hedef bazlı davranış (goal-oriented behavior), A*, öğrenme.}
+}
+
+@book{mark2009behavioral,
+  author    = {Mark, Dave},
+  title     = {Behavioral Mathematics for Game AI},
+  publisher = {Course Technology},
+  year      = {2009},
+  annote    = {Yöntem: Utility AI, response curve'ler ve kriter normalizasyonu. Utility skorlayıcısının doğrudan referansı.}
+}
+
+@misc{mark2010utility,
+  author       = {Mark, Dave and Dill, Kevin},
+  title        = {Improving {AI} Decision Modeling Through Utility Theory},
+  howpublished = {Game Developers Conference (GDC) AI Summit},
+  year         = {2010},
+  annote       = {Game AI Connection: Utility AI'ın ticari oyunlarda NPC karar mekanizması olarak kullanılması.}
+}
+
+@misc{orkin2006fear,
+  author       = {Orkin, Jeff},
+  title        = {Three States and a Plan: The {A.I.} of {F.E.A.R.}},
+  howpublished = {Game Developers Conference (GDC)},
+  year         = {2006},
+  annote       = {Related Work: oyunlarda hedef/eylem seçimi (GOAP); Utility AI ile karşılaştırma için.}
+}
+
+@book{yannakakis2018aigames,
+  author    = {Yannakakis, Georgios N. and Togelius, Julian},
+  title     = {Artificial Intelligence and Games},
+  publisher = {Springer},
+  year      = {2018},
+  annote    = {Giriş ve Game AI Connection: oyun yapay zekası yöntemlerinin oyun dışı simülasyonlara aktarılması; uyarlanabilir ajanlar.}
+}
+
+% ---------------------------------------------------------------- (5) Yardımcı yöntemler
+@article{hart1968astar,
+  author  = {Hart, Peter E. and Nilsson, Nils J. and Raphael, Bertram},
+  title   = {A Formal Basis for the Heuristic Determination of Minimum Cost Paths},
+  journal = {IEEE Transactions on Systems Science and Cybernetics},
+  volume  = {4},
+  number  = {2},
+  pages   = {100--107},
+  year    = {1968},
+  doi     = {10.1109/TSSC.1968.300136},
+  annote  = {Simülatör: depo-bölge rotaları için A* (derste H4; föyde yardımcı modül).}
+}
+
+@book{holland1975adaptation,
+  author    = {Holland, John H.},
+  title     = {Adaptation in Natural and Artificial Systems},
+  publisher = {University of Michigan Press},
+  year      = {1975},
+  annote    = {Baseline: Utility ağırlıklarını eğitim seed'lerinde optimize eden genetik algoritma (derste H6).}
+}
+
+@article{sherman1950inverse,
+  author  = {Sherman, Jack and Morrison, Winifred J.},
+  title   = {Adjustment of an Inverse Matrix Corresponding to a Change in One Element of a Given Matrix},
+  journal = {The Annals of Mathematical Statistics},
+  volume  = {21},
+  number  = {1},
+  pages   = {124--127},
+  year    = {1950},
+  annote  = {Yöntem: LinUCB'de A^{-1} matrisinin O(d^2) maliyetle güncellenmesi.}
+}
+
+@article{blackman2021xoshiro,
+  author  = {Blackman, David and Vigna, Sebastiano},
+  title   = {Scrambled Linear Pseudorandom Number Generators},
+  journal = {ACM Transactions on Mathematical Software},
+  volume  = {47},
+  number  = {4},
+  year    = {2021},
+  annote  = {Deney protokolü: deterministik ve platformdan bağımsız rastgele sayı üreteci (xoshiro256**), bağımsız akışlar.}
+}
+
+% ---------------------------------------------------------------- (6) Veri ve deney metodolojisi
+@misc{chen2012onlineretail2,
+  author       = {Chen, Daqing},
+  title        = {Online Retail {II}},
+  howpublished = {UCI Machine Learning Repository},
+  year         = {2012},
+  doi          = {10.24432/C5CG6D},
+  note         = {CC BY 4.0},
+  annote       = {Dataset/Simulator: saatlik talep deseni, sepet büyüklüğü, adet ve ürün popülerliği bu veriden çıkarıldı (tools/prepare_retail_data.py).}
+}
+
+@article{chen2012rfm,
+  author  = {Chen, Daqing and Sain, Sai Laing and Guo, Kun},
+  title   = {Data Mining for the Online Retail Industry: A Case Study of {RFM} Model-Based Customer Segmentation Using Data Mining},
+  journal = {Journal of Database Marketing \& Customer Strategy Management},
+  volume  = {19},
+  number  = {3},
+  pages   = {197--208},
+  year    = {2012},
+  annote  = {Dataset: veri setinin kaynağı olan çalışma; verinin toptan/hediyelik eşya perakendecisine ait olduğu (geçerlilik tehditleri bölümünde).}
+}
+
+@book{law2015simulation,
+  author    = {Law, Averill M.},
+  title     = {Simulation Modeling and Analysis},
+  edition   = {5},
+  publisher = {McGraw-Hill},
+  year      = {2015},
+  annote    = {Deney protokolü: ayrık olay simülasyonu, bağımsız tekrarlar, güven aralığı, ortak rastgele sayılar (common random numbers) ile eşleşik karşılaştırma.}
+}
+
+@inproceedings{henderson2018matters,
+  author    = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
+  title     = {Deep Reinforcement Learning That Matters},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  year      = {2018},
+  annote    = {Deney protokolü: çoklu seed, test üzerinde ayar yapmama, tekrarlanabilirlik.}
+}
+
+@inproceedings{agarwal2021precipice,
+  author    = {Agarwal, Rishabh and Schwarzer, Max and Castro, Pablo Samuel and Courville, Aaron and Bellemare, Marc G.},
+  title     = {Deep Reinforcement Learning at the Edge of the Statistical Precipice},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2021},
+  annote    = {Sonuçların raporlanması: az sayıda seed ile güven aralığı ve sağlam özet istatistikler.}
+}
