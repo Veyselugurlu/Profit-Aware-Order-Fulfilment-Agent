@@ -136,6 +136,64 @@ namespace Fulfilment.Simulation
             return errors;
         }
 
+        /// <summary>The brief asks for at least four cost/penalty components; all of them must be positive.</summary>
+        public static List<string> Validate(CostConfig cost)
+        {
+            var errors = new List<string>();
+            if (cost == null)
+            {
+                errors.Add("cost config is missing");
+                return errors;
+            }
+
+            if (cost.kmPerCell <= 0.0) errors.Add("kmPerCell must be positive");
+            if (cost.vehicleSpeedKmh <= 0.0) errors.Add("vehicleSpeedKmh must be positive");
+            if (cost.handlingMinutes < 0.0) errors.Add("handlingMinutes must not be negative");
+            if (cost.shippingBasePerPackage < 0.0 || cost.shippingPerKm < 0.0 || cost.shippingPerKgKm < 0.0)
+                errors.Add("shipping coefficients must not be negative");
+            if (cost.shippingBasePerPackage + cost.shippingPerKm + cost.shippingPerKgKm <= 0.0)
+                errors.Add("shipping cost component is missing");
+            if (cost.splitPenaltyPerExtraPackage <= 0.0) errors.Add("split penalty component is missing");
+            if (cost.latenessPerHour <= 0.0) errors.Add("lateness component is missing");
+            if (cost.expressLatenessMultiplier < 1.0) errors.Add("expressLatenessMultiplier must be at least 1");
+            if (cost.lostSalePenaltyFactor <= 0.0) errors.Add("stock-out (lost sale) component is missing");
+            if (cost.opportunityCostFactor < 0.0) errors.Add("opportunityCostFactor must not be negative");
+            if (cost.safetyStockHours < 0.0) errors.Add("safetyStockHours must not be negative");
+            return errors;
+        }
+
+        public static List<string> Validate(RegimeConfig regime)
+        {
+            var errors = new List<string>();
+            if (regime == null)
+            {
+                errors.Add("regime config is missing");
+                return errors;
+            }
+
+            switch (regime.type)
+            {
+                case "stable":
+                    break;
+                case "seasonal":
+                    if (regime.periodDays <= 0.0) errors.Add($"regime {regime.code} periodDays must be positive");
+                    if (regime.amplitude < 0.0 || regime.amplitude >= 1.0)
+                        errors.Add($"regime {regime.code} amplitude must be in [0,1)");
+                    break;
+                case "volatile":
+                    if (regime.shocksPerDay < 0.0) errors.Add($"regime {regime.code} shocksPerDay must not be negative");
+                    if (regime.shockMinHours <= 0.0 || regime.shockMaxHours < regime.shockMinHours)
+                        errors.Add($"regime {regime.code} shock length range is invalid");
+                    if (regime.shockMinMultiplier < 1.0 || regime.shockMaxMultiplier < regime.shockMinMultiplier)
+                        errors.Add($"regime {regime.code} shock multiplier range is invalid");
+                    break;
+                default:
+                    errors.Add($"regime {regime.code} has unknown type '{regime.type}'");
+                    break;
+            }
+            return errors;
+        }
+
         private static void CheckCell(List<string> errors, WorldConfig world, string label, int x, int y)
         {
             if (x < 0 || y < 0 || x >= world.gridWidth || y >= world.gridHeight)

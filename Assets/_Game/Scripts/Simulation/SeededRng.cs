@@ -12,7 +12,8 @@ namespace Fulfilment.Simulation
         Orders = 1,
         Replenishment = 2,
         Policy = 3,
-        Layout = 4
+        Layout = 4,
+        Regime = 5
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 | Sprint | Tarih | Konu | Durum |
 |---|---|---|---|
 | S1 | 25–27 Eki | Kurulum, domain modeli, sipariş üretici, veri profili | tamamlandı |
-| S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | — |
+| S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
 | S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | — |
 | S4 | 3–5 Kas | Utility AI ve arayüz panelleri | — |
 | S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | — |
@@ -49,7 +49,9 @@ Bütün parametreler `Assets/StreamingAssets/configs/` altında JSON dosyalarıd
 |---|---|
 | `world.json` | 64×40 kurgusal şehir, 4 depo, 12 müşteri bölgesi, 30 ürün |
 | `demand_profile.json` | saatlik talep, sepet büyüklüğü, adet, ürün popülerliği (veri setinden) |
-| `scenarios/low.json`, `medium.json`, `high.json` | yük seviyeleri: 3 günde yaklaşık 630 / 1020 / 1620 sipariş |
+| `scenarios/low.json`, `medium.json`, `high.json` | yük seviyeleri: 3 günde yaklaşık 630 / 1020 / 1620 sipariş, teslim sözü, stok günü, yenileme |
+| `cost.json` | kargo, split cezası, gecikme, kayıp satış ve fırsat maliyeti katsayıları; hız ve işlem süresi |
+| `regimes/stable.json`, `seasonal.json`, `volatile.json` | talep rejimleri: sabit, mevsimsel dalga, rastgele talep şokları |
 
 ## Veri seti
 
@@ -62,6 +64,14 @@ python tools/prepare_retail_data.py data/raw/online_retail_ii.zip Assets/Streami
 ```
 
 Temizleme adımları ve özet istatistikler `docs/data/retail_profile_stats.json` dosyasındadır.
+
+## Hızlı kontrol
+
+Unity menüsü **Fulfilment → Run Headless Check**: iki baseline × 3 yük × 3 rejim, tek seed. KPI tablosu Console'a, CSV'ler `results/_scratch/` altına yazılır.
+
+```bash
+Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.HeadlessRun.RunBatch -seed 1 -logFile log.txt
+```
 
 ## Deneyleri tekrar üretme
 

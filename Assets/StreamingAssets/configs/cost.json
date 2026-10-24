@@ -1,0 +1,15 @@
+{
+  "currency": "TL",
+  "kmPerCell": 0.5,
+  "vehicleSpeedKmh": 25,
+  "handlingMinutes": 30,
+  "shippingBasePerPackage": 30,
+  "shippingPerKm": 2.0,
+  "shippingPerKgKm": 0.3,
+  "splitPenaltyPerExtraPackage": 40,
+  "latenessPerHour": 25,
+  "expressLatenessMultiplier": 2,
+  "lostSalePenaltyFactor": 0.3,
+  "opportunityCostFactor": 0.5,
+  "safetyStockHours": 18
+}

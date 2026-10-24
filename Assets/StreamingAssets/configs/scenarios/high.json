@@ -4,9 +4,9 @@
   "episodeDays": 3,
   "ordersPerDay": 540,
   "expressShare": 0.25,
-  "promisedHoursStandard": 48,
-  "promisedHoursExpress": 24,
-  "stockDays": 5,
+  "promisedHoursStandard": 8,
+  "promisedHoursExpress": 2.5,
+  "stockDays": 1.8,
   "replenishReviewHours": 24,
   "leadTimeHoursMin": 12,
   "leadTimeHoursMax": 24
