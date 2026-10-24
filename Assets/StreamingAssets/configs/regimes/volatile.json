@@ -1,0 +1,10 @@
+{
+  "code": "volatile",
+  "displayName": "Volatile",
+  "type": "volatile",
+  "shocksPerDay": 1.0,
+  "shockMinHours": 2,
+  "shockMaxHours": 5,
+  "shockMinMultiplier": 1.5,
+  "shockMaxMultiplier": 2.5
+}

@@ -92,4 +92,58 @@ namespace Fulfilment.Simulation
         public int EpisodeTicks => episodeDays * SimTime.TicksPerDay;
         public double ExpectedOrders => ordersPerDay * episodeDays;
     }
+
+    /// <summary>Logistics and cost coefficients (cost.json). Money is in the configured currency.</summary>
+    [Serializable]
+    public sealed class CostConfig
+    {
+        public string currency;
+
+        // Logistics
+        public double kmPerCell;
+        public double vehicleSpeedKmh;
+        /// <summary>Fixed processing delay after picking (labelling, loading); does not use center capacity.</summary>
+        public double handlingMinutes;
+
+        // Shipping: per parcel base + per km + per kg·km
+        public double shippingBasePerPackage;
+        public double shippingPerKm;
+        public double shippingPerKgKm;
+
+        /// <summary>Extra cost per additional parcel of a split order (handling, customer inconvenience).</summary>
+        public double splitPenaltyPerExtraPackage;
+
+        public double latenessPerHour;
+        public double expressLatenessMultiplier;
+
+        /// <summary>Goodwill penalty per lost unit as a fraction of its price (the lost margin is lost anyway).</summary>
+        public double lostSalePenaltyFactor;
+
+        /// <summary>Fraction of a unit's margin charged when a decision pushes a center below safety stock.</summary>
+        public double opportunityCostFactor;
+
+        /// <summary>Safety stock of a center: its expected demand over this many hours.</summary>
+        public double safetyStockHours;
+    }
+
+    /// <summary>Demand regime (regimes/*.json): stable, seasonal or volatile arrival rate.</summary>
+    [Serializable]
+    public sealed class RegimeConfig
+    {
+        public string code;
+        public string displayName;
+        public string type;
+
+        // seasonal: 1 + amplitude · sin(2π (t/day + phase) / period)
+        public double amplitude;
+        public double periodDays;
+        public double phaseDays;
+
+        // volatile: Poisson number of demand shocks with random length and height
+        public double shocksPerDay;
+        public double shockMinHours;
+        public double shockMaxHours;
+        public double shockMinMultiplier;
+        public double shockMaxMultiplier;
+    }
 }

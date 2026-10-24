@@ -1,0 +1,8 @@
+{
+  "code": "seasonal",
+  "displayName": "Seasonal",
+  "type": "seasonal",
+  "amplitude": 0.35,
+  "periodDays": 3,
+  "phaseDays": 0
+}
