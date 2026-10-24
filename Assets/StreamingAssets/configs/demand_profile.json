@@ -1,0 +1,9 @@
+{
+  "source": "handcrafted default; replaced by tools/prepare_retail_data.py (UCI Online Retail II) in S1-8",
+  "hourWeights": [0.20, 0.12, 0.08, 0.06, 0.06, 0.10, 0.25, 0.50, 0.80, 1.10, 1.30, 1.45,
+                  1.50, 1.40, 1.25, 1.15, 1.10, 1.15, 1.30, 1.55, 1.65, 1.40, 0.90, 0.45],
+  "skuWeights": [],
+  "zipfExponent": 1.0,
+  "basketSizeWeights": [0.45, 0.27, 0.15, 0.08, 0.05],
+  "quantityWeights": [0.78, 0.17, 0.05]
+}

@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "Fulfilment.Simulation",
         "Fulfilment.AI",
-        "Fulfilment.Experiments"
+        "Fulfilment.Experiments",
+        "Fulfilment.Presentation"
     ],
     "includePlatforms": [
         "Editor"
