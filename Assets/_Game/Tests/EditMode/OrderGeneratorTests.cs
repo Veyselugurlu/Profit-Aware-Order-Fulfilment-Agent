@@ -129,14 +129,25 @@ namespace Fulfilment.Tests
         }
 
         [Test]
-        public void NightHours_GetFewerOrdersThanEvening()
+        public void HourlyArrivals_FollowTheHourProfile()
         {
             var byHour = new int[24];
+            int total = 0;
             foreach (int seed in TestSeeds)
                 foreach (Order o in Episode("high", seed))
+                {
                     byHour[SimTime.HourOfDay(o.CreatedTick)]++;
+                    total++;
+                }
 
-            Assert.Less(byHour[4], byHour[20] / 5);
+            double[] weights = configs.Demand.hourWeights;
+            double weightSum = weights.Sum();
+            for (int h = 0; h < 24; h++)
+                Assert.AreEqual(weights[h] / weightSum, byHour[h] / (double)total, 0.012, $"hour {h}");
+
+            int quietest = System.Array.IndexOf(weights, weights.Min());
+            int busiest = System.Array.IndexOf(weights, weights.Max());
+            Assert.Less(byHour[quietest] * 10, byHour[busiest]);
         }
     }
 }
