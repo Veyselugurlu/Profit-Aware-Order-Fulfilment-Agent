@@ -3,10 +3,10 @@
   "gridWidth": 64,
   "gridHeight": 40,
   "centers": [
-    { "code": "FC-K", "name": "Kuzey Depo", "x": 15, "y": 31, "capacityPerHour": 45, "stockShare": 0.30 },
-    { "code": "FC-D", "name": "Doğu Depo",  "x": 51, "y": 27, "capacityPerHour": 40, "stockShare": 0.25 },
-    { "code": "FC-G", "name": "Güney Depo", "x": 36, "y": 6,  "capacityPerHour": 40, "stockShare": 0.25 },
-    { "code": "FC-B", "name": "Batı Depo",  "x": 6,  "y": 11, "capacityPerHour": 35, "stockShare": 0.20 }
+    { "code": "FC-K", "name": "Kuzey Depo", "x": 15, "y": 31, "capacityPerHour": 22, "stockShare": 0.30 },
+    { "code": "FC-D", "name": "Doğu Depo",  "x": 51, "y": 27, "capacityPerHour": 20, "stockShare": 0.25 },
+    { "code": "FC-G", "name": "Güney Depo", "x": 36, "y": 6,  "capacityPerHour": 18, "stockShare": 0.25 },
+    { "code": "FC-B", "name": "Batı Depo",  "x": 6,  "y": 11, "capacityPerHour": 16, "stockShare": 0.20 }
   ],
   "regions": [
     { "code": "R01", "name": "Liman",       "x": 4,  "y": 34, "demandWeight": 1.10 },
