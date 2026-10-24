@@ -21,7 +21,7 @@ namespace Fulfilment.Editor
         private const string Marker = "[HeadlessRun]";
 
         [MenuItem("Fulfilment/Run Headless Check")]
-        public static void RunFromMenu() => Run(1001);
+        public static void RunFromMenu() => Run(1); // training seed: calibration never looks at test seeds
 
         public static void RunBatch()
         {
@@ -30,7 +30,7 @@ namespace Fulfilment.Editor
             {
                 string[] args = Environment.GetCommandLineArgs();
                 int index = Array.IndexOf(args, "-seed");
-                int seed = index >= 0 && index + 1 < args.Length ? int.Parse(args[index + 1]) : 1001;
+                int seed = index >= 0 && index + 1 < args.Length ? int.Parse(args[index + 1]) : 1;
                 Run(seed);
             }
             catch (Exception e)
