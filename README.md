@@ -97,4 +97,4 @@ Kullanılacak görsel asset'ler eklendikçe bu tabloya yazılacak.
 
 ## Yapay zekâ kullanımı
 
-Ders politikası gereği belirtilir: çalışmanın hazırlanmasında yapay zekâ destekli araçlardan yararlanılmıştır. Kod çalıştırılarak ve testlerle kontrol edilmiştir.
+Ders politikası gereği belirtilir: çalışmanın hazırlanmasında yapay zekâ destekli araçlardan yararlanılmıştır.
