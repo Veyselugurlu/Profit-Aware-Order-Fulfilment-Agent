@@ -1,0 +1,13 @@
+{
+  "code": "medium",
+  "displayName": "Medium",
+  "episodeDays": 3,
+  "ordersPerDay": 340,
+  "expressShare": 0.20,
+  "promisedHoursStandard": 48,
+  "promisedHoursExpress": 24,
+  "stockDays": 5,
+  "replenishReviewHours": 24,
+  "leadTimeHoursMin": 12,
+  "leadTimeHoursMax": 24
+}

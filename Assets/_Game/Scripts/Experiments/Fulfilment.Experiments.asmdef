@@ -1,0 +1,17 @@
+{
+    "name": "Fulfilment.Experiments",
+    "rootNamespace": "Fulfilment.Experiments",
+    "references": [
+        "Fulfilment.Simulation",
+        "Fulfilment.AI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

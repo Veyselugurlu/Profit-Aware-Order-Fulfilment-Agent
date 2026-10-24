@@ -1,0 +1,13 @@
+{
+  "code": "low",
+  "displayName": "Low",
+  "episodeDays": 3,
+  "ordersPerDay": 210,
+  "expressShare": 0.15,
+  "promisedHoursStandard": 48,
+  "promisedHoursExpress": 24,
+  "stockDays": 5,
+  "replenishReviewHours": 24,
+  "leadTimeHoursMin": 12,
+  "leadTimeHoursMax": 24
+}
