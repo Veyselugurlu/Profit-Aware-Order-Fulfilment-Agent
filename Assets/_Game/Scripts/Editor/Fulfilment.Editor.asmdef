@@ -1,0 +1,21 @@
+{
+    "name": "Fulfilment.Editor",
+    "rootNamespace": "Fulfilment.Editor",
+    "references": [
+        "Fulfilment.Simulation",
+        "Fulfilment.AI",
+        "Fulfilment.Experiments",
+        "Fulfilment.Presentation"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

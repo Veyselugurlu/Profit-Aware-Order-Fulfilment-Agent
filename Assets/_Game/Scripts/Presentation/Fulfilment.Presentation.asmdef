@@ -1,0 +1,19 @@
+{
+    "name": "Fulfilment.Presentation",
+    "rootNamespace": "Fulfilment.Presentation",
+    "references": [
+        "Fulfilment.Simulation",
+        "Fulfilment.AI",
+        "Fulfilment.Experiments",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
