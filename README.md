@@ -14,7 +14,7 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 | Sprint | Tarih | Konu | Durum |
 |---|---|---|---|
 | S1 | 25–27 Eki | Kurulum, domain modeli, sipariş üretici, veri profili | tamamlandı |
-| S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
+| S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar |  |
 | S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | — |
 | S4 | 3–5 Kas | Utility AI ve arayüz panelleri | — |
 | S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | — |
