@@ -55,7 +55,7 @@ namespace Fulfilment.Editor
                 foreach (var scenario in configs.Scenarios)
                     foreach (string policyName in PolicyFactory.Names)
                     {
-                        EpisodeResult result = EpisodeRunner.Run(configs.Setup(scenario.code, regime.code, seed), PolicyFactory.Create(policyName));
+                        EpisodeResult result = EpisodeRunner.Run(configs.Setup(scenario.code, regime.code, seed), configs.CreatePolicy(policyName));
                         results.Add(result);
                         CsvExport.WriteOrders(Path.Combine(outDir, $"orders_{policyName}_{scenario.code}_{regime.code}_{seed}.csv"), result);
                     }

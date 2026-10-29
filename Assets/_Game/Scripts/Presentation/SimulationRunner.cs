@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Fulfilment.AI;
 using Fulfilment.Simulation;
 using UnityEngine;
 
@@ -22,6 +21,8 @@ namespace Fulfilment.Presentation
         [SerializeField] private string regime = "stable";
         [SerializeField] private string policy = "Nearest";
         [SerializeField] private int seed = 1;
+        [SerializeField] private float stockMultiplier = 1f;
+        [SerializeField] private float splitPenalty = -1f; // < 0: use cost.json
 
         private double accumulator;
 
@@ -34,6 +35,10 @@ namespace Fulfilment.Presentation
         public string Regime => regime;
         public string Policy => policy;
         public int Seed => seed;
+        public float StockMultiplier => stockMultiplier;
+
+        /// <summary>Split penalty in use (the cost.json value unless overridden).</summary>
+        public float SplitPenalty => splitPenalty >= 0f ? splitPenalty : (float)(Configs?.Cost.splitPenaltyPerExtraPackage ?? 0);
 
         /// <summary>Simulated time including the fraction since the last tick, for smooth animation.</summary>
         public double SmoothTick => Engine == null ? 0.0 : Engine.Tick + (IsRunning ? Math.Min(accumulator, 1.0) : 0.0);
@@ -66,12 +71,19 @@ namespace Fulfilment.Presentation
             ResetEpisode();
         }
 
+        /// <summary>Scenario-panel parameters; applied on the next reset.</summary>
+        public void SetParameters(float stockLevel, float splitPenaltyValue)
+        {
+            stockMultiplier = Mathf.Clamp(stockLevel, 0.2f, 3f);
+            splitPenalty = Mathf.Max(0f, splitPenaltyValue);
+        }
+
         public void ResetEpisode()
         {
             IsRunning = false;
             accumulator = 0.0;
-            EpisodeSetup setup = Configs.Setup(scenario, regime, seed);
-            Engine = new SimulationEngine(setup, PolicyFactory.Create(policy));
+            EpisodeSetup setup = Configs.Setup(scenario, regime, seed, stockMultiplier, splitPenalty >= 0f ? splitPenalty : (double?)null);
+            Engine = new SimulationEngine(setup, Configs.CreatePolicy(policy));
             EpisodeStarted?.Invoke(Engine);
         }
 
