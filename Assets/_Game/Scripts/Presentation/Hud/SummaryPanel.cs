@@ -81,7 +81,7 @@ namespace Fulfilment.Presentation
         {
             ConfigSet cfg = runner.Configs;
             var columns = new List<(string policy, KpiTracker kpis)>();
-            foreach (string policy in PolicyFactory.Names)
+            foreach (string policy in cfg.AvailablePolicies)
             {
                 KpiTracker k = policy == runner.Policy
                     ? finished.Kpis
@@ -111,7 +111,7 @@ namespace Fulfilment.Presentation
             }
 
             buttons.Clear();
-            foreach (string policy in PolicyFactory.Names)
+            foreach (string policy in cfg.AvailablePolicies)
             {
                 string p = policy;
                 var b = new Button(() => Replay(p)) { text = $"{p} ile oynat" };
