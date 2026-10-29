@@ -1,0 +1,18 @@
+{
+  "experiment": "vize_prelim",
+  "description": "Paper Draft I preliminary results: two baselines and the fixed-weight Utility AI on every load level and demand regime, 10 test seeds, paired per seed.",
+  "created_utc": "2026-10-29T19:10:43Z",
+  "git_commit": "097b7c683a1e907bcd250e354c84c3aec4e02db5",
+  "git_dirty": false,
+  "config_sha256": "1bdadb10fdf46f33593f76c595cc2d1b2203ea780655d3444143fa7481242e67",
+  "unity_version": "6000.3.25f1",
+  "seed_set": "test",
+  "seeds": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010],
+  "policies": ["Nearest", "LowestCost", "Utility"],
+  "scenarios": ["low", "medium", "high"],
+  "regimes": ["stable", "seasonal", "volatile"],
+  "stock_multiplier": 1,
+  "split_penalty_override": -1,
+  "episodes": 270,
+  "wall_seconds": 27.138
+}
