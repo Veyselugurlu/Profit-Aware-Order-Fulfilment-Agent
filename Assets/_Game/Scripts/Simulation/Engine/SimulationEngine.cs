@@ -33,6 +33,7 @@ namespace Fulfilment.Simulation
         public ReplenishmentSystem Replenishment { get; }
         public CenterQueues Queues { get; }
         public CostModel Costs { get; }
+        public IDistanceModel Distances { get; }
         public KpiTracker Kpis { get; } = new KpiTracker();
 
         /// <summary>The next tick to be simulated.</summary>
@@ -53,7 +54,8 @@ namespace Fulfilment.Simulation
             Setup = setup ?? throw new ArgumentNullException(nameof(setup));
             Policy = policy ?? throw new ArgumentNullException(nameof(policy));
 
-            distances ??= new GridDistanceModel(setup.World, setup.Cost.kmPerCell);
+            distances ??= new RoadDistanceModel(setup.World, setup.Cost.kmPerCell);
+            Distances = distances;
             Regime = DemandRegimes.Create(setup.Regime, setup.Scenario.EpisodeTicks, setup.Seed);
             orderGenerator = new OrderGenerator(setup.World, setup.Scenario, setup.Demand, setup.Seed, Regime);
             StockPlan = new StockPlan(setup.World, setup.Scenario, setup.Demand, setup.Cost, setup.StockMultiplier);

@@ -13,9 +13,18 @@ namespace Fulfilment.Simulation
         public IReadOnlyList<CustomerRegion> Regions { get; }
         public IReadOnlyList<Sku> Skus { get; }
 
-        private World(string name, int gridWidth, int gridHeight,
+        /// <summary>Drivable grid (streets, river, bridges, driveways).</summary>
+        public RoadNetwork Roads { get; }
+
+        private RouteTable routes;
+
+        /// <summary>A* route of every (center, region) pair, computed on first use.</summary>
+        public RouteTable Routes => routes ??= new RouteTable(this);
+
+        private World(string name, int gridWidth, int gridHeight, RoadNetwork roads,
             IReadOnlyList<FulfilmentCenter> centers, IReadOnlyList<CustomerRegion> regions, IReadOnlyList<Sku> skus)
         {
+            Roads = roads;
             Name = name;
             GridWidth = gridWidth;
             GridHeight = gridHeight;
@@ -52,7 +61,7 @@ namespace Fulfilment.Simulation
                 skus[i] = new Sku(i, s.code, s.name, s.category, s.price, s.unitCost, s.weightKg);
             }
 
-            return new World(config.name, config.gridWidth, config.gridHeight, centers, regions, skus);
+            return new World(config.name, config.gridWidth, config.gridHeight, RoadNetwork.Build(config), centers, regions, skus);
         }
     }
 }

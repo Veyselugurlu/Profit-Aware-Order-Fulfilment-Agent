@@ -12,9 +12,27 @@ namespace Fulfilment.Simulation
         public string name;
         public int gridWidth;
         public int gridHeight;
+
+        /// <summary>Street grid, river and bridges. Missing → every cell is drivable (open grid).</summary>
+        public RoadLayoutConfig roads;
+
         public CenterConfig[] centers;
         public RegionConfig[] regions;
         public SkuConfig[] skus;
+    }
+
+    /// <summary>
+    /// Streets run along every row and column that is a multiple of <see cref="streetSpacing"/>; the cells in
+    /// between are building blocks. A river <see cref="riverWidth"/> cells wide starts at column
+    /// <see cref="riverX"/> and can only be crossed on the street rows listed in <see cref="bridgeYs"/>.
+    /// </summary>
+    [Serializable]
+    public sealed class RoadLayoutConfig
+    {
+        public int streetSpacing;
+        public int riverX;
+        public int riverWidth;
+        public int[] bridgeYs;
     }
 
     [Serializable]

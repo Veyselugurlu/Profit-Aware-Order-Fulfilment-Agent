@@ -33,11 +33,11 @@ namespace Fulfilment.Tests
         {
             setup ??= Setup();
             var plan = new StockPlan(World, setup.Scenario, setup.Demand, setup.Cost);
-            return new CostModel(World, new GridDistanceModel(World, setup.Cost.kmPerCell), setup.Cost, plan);
+            return new CostModel(World, new RoadDistanceModel(World, setup.Cost.kmPerCell), setup.Cost, plan);
         }
 
         protected CandidateGenerator Candidates() =>
-            new CandidateGenerator(World, new GridDistanceModel(World, Configs.Cost.kmPerCell), Configs.Cost);
+            new CandidateGenerator(World, new RoadDistanceModel(World, Configs.Cost.kmPerCell), Configs.Cost);
 
         protected int RegionNamed(string code) => Array.FindIndex(ToArray(World.Regions), r => r.Code == code);
 

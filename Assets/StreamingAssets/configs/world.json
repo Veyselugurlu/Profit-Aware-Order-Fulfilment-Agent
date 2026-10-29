@@ -2,6 +2,7 @@
   "name": "Kurgusal Liman Şehri",
   "gridWidth": 64,
   "gridHeight": 40,
+  "roads": { "streetSpacing": 4, "riverX": 27, "riverWidth": 2, "bridgeYs": [8, 20, 32] },
   "centers": [
     { "code": "FC-K", "name": "Kuzey Depo", "x": 15, "y": 31, "capacityPerHour": 22, "stockShare": 0.30 },
     { "code": "FC-D", "name": "Doğu Depo",  "x": 51, "y": 27, "capacityPerHour": 20, "stockShare": 0.25 },
