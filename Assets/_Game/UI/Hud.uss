@@ -282,3 +282,24 @@
 
 .trend-card { min-width: 220px; }
 .sparkline { width: 210px; height: 36px; }
+
+/* ---------------------------------------------------------------- end-of-episode summary (Sprint 5) */
+
+.summary-overlay {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(10, 12, 16, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+.summary-card { width: 820px; padding: 20px 24px; border-radius: 10px; }
+.summary-title { font-size: 18px; -unity-font-style: bold; color: rgb(79, 195, 247); }
+.summary-note { font-size: 12px; color: rgb(144, 164, 174); white-space: normal; margin-top: 2px; margin-bottom: 12px; }
+.summary-row { flex-direction: row; border-bottom-width: 1px; border-bottom-color: rgba(255, 255, 255, 0.06); padding-top: 5px; padding-bottom: 5px; }
+.summary-head { border-bottom-color: rgba(255, 255, 255, 0.2); }
+.summary-head .summary-value { -unity-font-style: bold; color: rgb(207, 216, 220); }
+.summary-label { width: 190px; color: rgb(176, 190, 197); font-size: 13px; }
+.summary-value { flex-grow: 1; flex-basis: 0; -unity-text-align: middle-right; font-size: 14px; padding-right: 12px; }
+.summary-value.current { background-color: rgba(79, 195, 247, 0.08); }
+.summary-value.best { color: rgb(102, 187, 106); -unity-font-style: bold; }
+.summary-buttons { flex-direction: row; justify-content: flex-end; margin-top: 16px; }

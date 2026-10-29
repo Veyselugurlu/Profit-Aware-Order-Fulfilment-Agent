@@ -33,6 +33,7 @@ namespace Fulfilment.Presentation
         private float worstFrameAt;
         private string diagPath;
         private string selectCode;
+        private float skipToEndAt = -1f;
 
         private void Start()
         {
@@ -53,6 +54,7 @@ namespace Fulfilment.Presentation
             string speed = Arg(args, "-speed");
             if (speed != null) runner.SetSpeed(float.Parse(speed, CultureInfo.InvariantCulture));
             if (Array.IndexOf(args, "-autoplay") >= 0) runner.Play();
+            skipToEndAt = ParseFloat(Arg(args, "-skipToEndAt"), -1f);
 
             screenshotPath = Arg(args, "-screenshot");
             screenshotAt = ParseFloat(Arg(args, "-screenshotAt"), screenshotPath != null ? 5f : -1f);
@@ -79,6 +81,12 @@ namespace Fulfilment.Presentation
             {
                 frames++;
                 if (dt > worstFrame) { worstFrame = dt; worstFrameAt = elapsed; }
+            }
+
+            if (skipToEndAt >= 0f && elapsed >= skipToEndAt)
+            {
+                runner.SkipToEnd();
+                skipToEndAt = -1f;
             }
 
             if (screenshotPath != null && !shotTaken && elapsed >= screenshotAt)
