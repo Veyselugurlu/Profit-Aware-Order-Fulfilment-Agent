@@ -1,12 +1,12 @@
 namespace Fulfilment.Simulation
 {
-    /// <summary>Road distance between a center and a region. S3 replaces the grid estimate with A* routes.</summary>
+    /// <summary>Road distance between a center and a region (A* routes by default, see <see cref="RoadDistanceModel"/>).</summary>
     public interface IDistanceModel
     {
         double DistanceKm(int centerId, int regionId);
     }
 
-    /// <summary>Manhattan distance on the city grid (streets run along the grid axes).</summary>
+    /// <summary>Straight Manhattan distance, ignoring the river (Sprint 2 estimate; kept for ablation and tests).</summary>
     public sealed class GridDistanceModel : IDistanceModel
     {
         private readonly double[,] km;

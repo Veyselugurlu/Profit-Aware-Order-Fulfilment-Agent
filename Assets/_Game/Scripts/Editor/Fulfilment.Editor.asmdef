@@ -5,7 +5,9 @@
         "Fulfilment.Simulation",
         "Fulfilment.AI",
         "Fulfilment.Experiments",
-        "Fulfilment.Presentation"
+        "Fulfilment.Presentation",
+        "Unity.InputSystem",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [
         "Editor"
