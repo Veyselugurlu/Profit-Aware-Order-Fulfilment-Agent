@@ -1,0 +1,14 @@
+{
+    "genes": [
+        0,
+        0,
+        0,
+        3,
+        2,
+        0,
+        3,
+        2
+    ],
+    "source": "evolve_profiles: mutation 0.1, GA seed 2027, commit 56d14c40ae5b2037f5c2fb4eeedbcda144dde67e",
+    "validationFitness": 901.7481
+}
