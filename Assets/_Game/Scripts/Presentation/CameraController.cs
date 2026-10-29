@@ -19,7 +19,7 @@ namespace Fulfilment.Presentation
         [Header("HUD insets in reference pixels (same scaling as the HUD PanelSettings)")]
         [SerializeField] private Vector2 referenceResolution = new Vector2(1600f, 900f);
         [SerializeField, Range(0f, 1f)] private float match = 0.5f;
-        [SerializeField] private float insetLeft;
+        [SerializeField] private float insetLeft = 300f;
         [SerializeField] private float insetRight = 340f;
         [SerializeField] private float insetTop = 56f;
         [SerializeField] private float insetBottom = 70f;
