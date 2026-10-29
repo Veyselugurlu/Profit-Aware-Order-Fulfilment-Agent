@@ -113,6 +113,25 @@ namespace Fulfilment.Editor
             AssetDatabase.Refresh();
         }
 
+        /// <summary>
+        /// Builds the player from the committed scene without regenerating it (regenerating rewrites object ids,
+        /// which would mark the build as built from uncommitted changes). Use this for release builds.
+        /// </summary>
+        public static void BuildPlayerBatch()
+        {
+            int exitCode = 0;
+            try
+            {
+                BuildWindowsPlayer();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{Marker} FAILED {e}");
+                exitCode = 1;
+            }
+            EditorApplication.Exit(exitCode);
+        }
+
         public static void BuildSceneAndPlayerBatch()
         {
             int exitCode = 0;
