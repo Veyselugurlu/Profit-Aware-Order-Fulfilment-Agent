@@ -23,6 +23,13 @@ namespace Fulfilment.Simulation
         public int ChosenIndex { get; }
         public List<int> ShipmentIds { get; } = new List<int>();
 
+        /// <summary>Why the policy chose this plan (null if the policy does not explain itself).</summary>
+        public DecisionTrace Trace { get; internal set; }
+
+        /// <summary>All candidate plans and their evaluations at decision time, for the decision panel.</summary>
+        public IReadOnlyList<FulfilmentPlan> Candidates { get; internal set; }
+        public IReadOnlyList<PlanEvaluation> CandidateEvaluations { get; internal set; }
+
         public OrderStatus Status { get; internal set; }
         public int OutstandingShipments { get; internal set; }
         public int CompletionTick { get; internal set; } = -1;

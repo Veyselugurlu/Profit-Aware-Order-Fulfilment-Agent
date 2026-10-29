@@ -54,6 +54,8 @@ namespace Fulfilment.Simulation
             return units * world.Skus[skuId].Margin * Config.opportunityCostFactor;
         }
 
+        public double SafetyStock(int centerId, int skuId) => stockPlan.SafetyStock(centerId, skuId);
+
         public bool IsBelowSafety(int centerId, int skuId, int onHand) => onHand < stockPlan.SafetyStock(centerId, skuId);
 
         /// <summary>Prices a candidate plan for the current inventory and center queues, without changing either.</summary>

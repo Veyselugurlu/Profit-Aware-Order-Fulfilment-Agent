@@ -7,11 +7,14 @@ namespace Fulfilment.AI
     /// with the lowest shipping cost including the split penalty. Delivery time, stock levels and the
     /// future value of stock are ignored, which is exactly the myopia the adaptive agent should overcome.
     /// </summary>
-    public sealed class LowestCostPolicy : IFulfilmentPolicy
+    public sealed class LowestCostPolicy : IFulfilmentPolicy, IExplainablePolicy
     {
-        public string Name => "LowestCost";
+        public const string RuleText = "Önce en az ürün kaybettiren planlar; aralarından kargo + split maliyeti en düşük olan.";
 
-        public void Reset(int seed) { }
+        public string Name => "LowestCost";
+        public DecisionTrace LastTrace { get; private set; }
+
+        public void Reset(int seed) => LastTrace = null;
 
         public int Choose(DecisionContext context)
         {
@@ -27,6 +30,7 @@ namespace Fulfilment.AI
                 if (e.ShippingCost + e.SplitCost < b.ShippingCost + b.SplitCost)
                     best = i;
             }
+            LastTrace = new DecisionTrace { Policy = Name, Rule = RuleText, Chosen = best };
             return best;
         }
 
