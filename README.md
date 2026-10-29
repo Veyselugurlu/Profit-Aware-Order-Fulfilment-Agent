@@ -140,4 +140,4 @@ S10'da tamamlanacak. Bu bölümde Utility AI'ın oyunlardaki rolü (NPC'lerin ih
 
 ## Yapay zekâ kullanımı
 
-Ders politikası gereği belirtilir: çalışmanın hazırlanmasında yapay zekâ destekli araçlardan yararlanılmıştır. Kod çalıştırılarak ve testlerle kontrol edilmiştir.
+Ders politikası gereği belirtilir: çalışmanın hazırlanmasında yapay zekâ destekli araçlardan yararlanılmıştır.
