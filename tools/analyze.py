@@ -63,12 +63,14 @@ def describe(df: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
 
 
 def paired(df: pd.DataFrame, focus: str, keys: list[str]) -> pd.DataFrame:
-    """Focus policy minus each other policy, matched on (keys, seed)."""
+    """Focus policy minus each other policy, matched on seed (and on regime/scenario when they are not grouping keys)."""
     rows = []
     others = [p for p in df["policy"].unique() if p != focus]
     for key, group in df.groupby(keys, sort=False):
         key = key if isinstance(key, tuple) else (key,)
-        wide = group.pivot_table(index="seed", columns="policy", values=METRICS)
+        # Pair on every column that is not a grouping key, e.g. (seed, regime) when pooling over regimes.
+        index = ["seed"] + [c for c in ("scenario", "regime") if c not in keys]
+        wide = group.pivot_table(index=index, columns="policy", values=METRICS, aggfunc="first")
         for other in others:
             for metric in METRICS:
                 a, b = wide[(metric, focus)], wide[(metric, other)]
@@ -198,6 +200,8 @@ def main() -> None:
     parser.add_argument("--focus", default="Utility")
     parser.add_argument("--reference", default="LowestCost")
     args = parser.parse_args()
+    for stream in (sys.stdout, sys.stderr):
+        stream.reconfigure(encoding="utf-8")
 
     out: Path = args.experiment_dir
     runs = pd.read_csv(out / "runs.csv")
