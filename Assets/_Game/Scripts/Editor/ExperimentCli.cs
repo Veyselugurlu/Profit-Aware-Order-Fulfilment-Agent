@@ -23,6 +23,36 @@ namespace Fulfilment.Editor
         [MenuItem("Fulfilment/Run Experiment/vize_prelim (test seeds)")]
         public static void RunVize() => RunNamed("vize_prelim", null);
 
+        [MenuItem("Fulfilment/Run Experiment/evolve_profiles (GA, training + validation seeds)")]
+        public static void RunEvolveMenu() => Evolve("evolve_profiles", null);
+
+        /// <summary>Batch: -executeMethod Fulfilment.Editor.ExperimentCli.Evolve -experiment evolve_profiles [-out dir]</summary>
+        public static void Evolve()
+        {
+            int exitCode = 0;
+            try
+            {
+                string[] args = Environment.GetCommandLineArgs();
+                Evolve(Arg(args, "-experiment") ?? "evolve_profiles", Arg(args, "-out"));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{Marker} FAILED {e}");
+                exitCode = 1;
+            }
+            EditorApplication.Exit(exitCode);
+        }
+
+        private static void Evolve(string name, string outDir)
+        {
+            string projectRoot = Path.GetDirectoryName(Application.dataPath) ?? ".";
+            outDir ??= Path.Combine(projectRoot, "results", name);
+            ExperimentProvenance provenance = GitProvenance(projectRoot);
+            var runs = ExperimentLauncher.RunEvolution(name, outDir, provenance, line => Debug.Log($"{Marker} {line}"));
+            AssetDatabase.Refresh();
+            Debug.Log($"{Marker} evolution done: {runs.Count} runs, commit {provenance.GitCommit}{(provenance.GitDirty ? " (uncommitted changes)" : "")} → {outDir}");
+        }
+
         public static void Run()
         {
             int exitCode = 0;

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Fulfilment.AI;
 using Fulfilment.Experiments;
 using UnityEngine;
 
@@ -51,6 +52,40 @@ namespace Fulfilment.Presentation
                     if (done % 30 == 0 || done == total)
                         log?.Invoke($"  {done}/{total} {r.Policy} {r.Scenario} {r.Regime} seed {r.Seed}: profit {r.Kpis.Profit:0}");
                 });
+        }
+
+        /// <summary>
+        /// Runs an evolution experiment and writes the genome that wins on the validation seeds to
+        /// policies/evolved_dna.json, where the Evolved policy reads it.
+        /// </summary>
+        public static List<EvolutionExperiment.RunResult> RunEvolution(string experimentName, string outputDirectory,
+            ExperimentProvenance provenance, Action<string> log)
+        {
+            ConfigSet configs = ConfigLoader.LoadDefault();
+            List<string> configErrors = configs.Validate();
+            if (configErrors.Count > 0)
+                throw new InvalidOperationException("Config errors:\n" + string.Join("\n", configErrors));
+
+            var experiment = ConfigLoader.Read<EvolutionConfig>(ExperimentPath(experimentName));
+            provenance.ConfigHash = ConfigHash(ConfigLoader.DefaultRoot);
+            provenance.UnityVersion = Application.unityVersion;
+            _ = configs.BuildWorld().Routes; // build the shared world and routes before parallel evaluation
+
+            log?.Invoke($"evolution {experiment.name}: {experiment.mutationRates.Length} mutation rates × {experiment.gaSeeds.Length} GA seeds, " +
+                        $"population {experiment.populationSize}, {experiment.generations} generations → {outputDirectory}");
+            List<EvolutionExperiment.RunResult> runs = EvolutionExperiment.Run(experiment,
+                (scenario, regime, seed) => configs.Setup(scenario, regime, seed), configs.Policies, outputDirectory, provenance, log);
+
+            EvolutionExperiment.RunResult best = runs.OrderByDescending(r => r.ValidationFitness).First();
+            var dna = new EvolvedDnaConfig
+            {
+                genes = best.Best.ToArray(),
+                source = $"{experiment.name}: mutation {best.MutationRate.ToString(System.Globalization.CultureInfo.InvariantCulture)}, GA seed {best.GaSeed}, commit {provenance.GitCommit}",
+                validationFitness = Math.Round(best.ValidationFitness, 4)
+            };
+            File.WriteAllText(Path.Combine(ConfigLoader.DefaultRoot, "policies", "evolved_dna.json"), JsonUtility.ToJson(dna, true));
+            log?.Invoke($"selected {best.Best} (mutation {best.MutationRate}, seed {best.GaSeed}), validation {best.ValidationFitness:0.00} TL/order → policies/evolved_dna.json");
+            return runs;
         }
 
         /// <summary>SHA-256 over every config file (path and content), so results can be matched to the exact settings.</summary>

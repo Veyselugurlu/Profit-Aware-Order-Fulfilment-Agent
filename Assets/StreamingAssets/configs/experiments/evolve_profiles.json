@@ -1,0 +1,17 @@
+{
+  "name": "evolve_profiles",
+  "description": "Week 3 GA class experiment applied to the fulfilment agent: evolve the sensor -> weight-profile decision table for 3 mutation rates x 3 GA seeds on training episodes; pick the best genome on validation seeds.",
+  "populationSize": 24,
+  "generations": 20,
+  "eliteCount": 2,
+  "mutationRates": [0.0, 0.1, 0.3],
+  "gaSeeds": [2026, 2027, 2028],
+  "evaluation": [
+    { "scenario": "low",    "regime": "stable",   "seed": 1 },
+    { "scenario": "medium", "regime": "seasonal", "seed": 2 },
+    { "scenario": "high",   "regime": "stable",   "seed": 3 },
+    { "scenario": "high",   "regime": "volatile", "seed": 4 }
+  ],
+  "validationScenarios": ["low", "medium", "high"],
+  "validationRegimes": ["stable", "seasonal", "volatile"]
+}
