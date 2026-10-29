@@ -142,6 +142,8 @@ namespace Fulfilment.Simulation
 
         /// <summary>Safety stock of a center: its expected demand over this many hours.</summary>
         public double safetyStockHours;
+
+        public CostConfig Clone() => (CostConfig)MemberwiseClone();
     }
 
     /// <summary>Demand regime (regimes/*.json): stable, seasonal or volatile arrival rate.</summary>

@@ -116,7 +116,12 @@ namespace Fulfilment.Simulation
 
             FulfilmentPlan plan = plans[chosen];
             PlanEvaluation evaluation = evaluations[chosen];
-            var record = new OrderRecord(order, tick, plan, evaluation, plans.Count, chosen);
+            var record = new OrderRecord(order, tick, plan, evaluation, plans.Count, chosen)
+            {
+                Trace = (Policy as IExplainablePolicy)?.LastTrace,
+                Candidates = plans,
+                CandidateEvaluations = evaluations
+            };
             records.Add(record);
             recordsById[order.Id] = record;
             events.Add(SimEvent.OrderCreated(tick, order.Id));

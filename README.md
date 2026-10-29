@@ -6,12 +6,12 @@ Bursa Teknik Üniversitesi, Bilgisayar Mühendisliği Yüksek Lisans · Doç. Dr
 Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, siparişi hangi depodan göndereceğine ya da bölüp bölmeyeceğine karar veriyor. Bunu yaparken kargo maliyetini, gecikmeyi, bölünmüş gönderiyi ve stok tükenmesini dengeliyor. Simülasyon gerçek zamanlı bir Unity sahnesinde çalışıyor; aynı kod deneylerde de kullanılıyor.
 
 - **Baseline:** en yakın depo, en düşük kargo maliyeti
-- **Zorunlu AI 1:** açıklanabilir Utility AI (en az 4 normalize kriter, her kararın puan dökümü arayüzde)
+- **Zorunlu AI 1:** açıklanabilir Utility AI: her aday plan 5 kritere göre (maliyet, süre, stok sağlığı, split, doluluk) puanlanır, ağırlıklı toplamı en yüksek plan seçilir; her kararın puan dökümü arayüzde
 - **Zorunlu AI 2:** zamanla karar ağırlıklarını uyarlayan öğrenen ajan (Contextual Bandit veya RL; vize sonrası)
 
-![Simülasyon ekranı](docs/images/s03_map_high.png)
+![Simülasyon ekranı](docs/images/s04_utility_high.png)
 
-*High yük, Nearest politikası, 8x hız. Halkalar depoların stok durumunu, depoların altındaki çubuklar paketleme kuyruğunu gösterir; turkuaz paketler standart, sarılar ekspres siparişlerdir. Sağ panelde seçili deponun bilgileri vardır.*
+*High yük, Utility AI, 8x hız. Solda senaryo paneli ve depoların stok kartları; ortada harita (halkalar stok durumu, çubuklar paketleme kuyruğu, turkuaz/sarı kareler standart/ekspres paketler); sağda son kararın açıklaması: her aday plan için kriter katkıları ve toplam puan. Bu örnekte Utility AI, daha ucuz olan Doğu deposu yerine Güney deposunu seçmiştir, çünkü Doğu deposundan gönderim ürünü güvenlik stoğunun altına indiriyordu.*
 
 ## Durum
 
@@ -20,7 +20,7 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 | S1 | 25–27 Eki | Kurulum, domain modeli, sipariş üretici, veri profili | tamamlandı |
 | S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
 | S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | tamamlandı |
-| S4 | 3–5 Kas | Utility AI ve arayüz panelleri | — |
+| S4 | 3–5 Kas | Utility AI ve arayüz panelleri | tamamlandı |
 | S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | — |
 
 Her sprint ayrı bir `feature/sNN-...` dalında geliştirilir ve Pull Request ile `main` dalına birleştirilir.
@@ -53,10 +53,16 @@ Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.SceneBuilder.Bu
 | Fare tekerleği, `F` | yakınlaştırır; `F` haritayı ekrana sığdırır |
 | `Esc` | seçimi kaldırır |
 
+### Paneller
+
+- **Sol:** senaryo paneli (yük, rejim, politika, seed, stok seviyesi, split cezası; *Uygula* episode'u yeniden kurar, kod değişikliği gerekmez) ve her depo için stok kartı (stok sağlığı, tükenen ürünler, kuyruk, en kritik ürünler).
+- **Sağ:** karar açıklaması. Seçim yokken son kararı, pakete veya bölgeye tıklanınca o siparişin kararını, depoya tıklanınca depo bilgisini gösterir.
+- **Alt:** 8 canlı KPI ve saatlik servis seviyesi / stok bitmesi trendi.
+
 ### Komut satırı (build)
 
 ```bash
-Builds/ProfitFulfilmentAgent/ProfitFulfilmentAgent.exe -scenario high -regime volatile -policy LowestCost -seed 3 -speed 4 -autoplay
+Builds/ProfitFulfilmentAgent/ProfitFulfilmentAgent.exe -scenario high -regime volatile -policy Utility -seed 3 -speed 4 -autoplay
 ```
 
 Ek parametreler: `-select FC-D` (açılışta seç), `-screenshot dosya.png -screenshotAt 15`, `-fpsLog fps.txt -quitAfter 30`.
@@ -86,6 +92,7 @@ Bütün parametreler `Assets/StreamingAssets/configs/` altında JSON dosyalarıd
 | `scenarios/low.json`, `medium.json`, `high.json` | yük seviyeleri: 3 günde yaklaşık 630 / 1020 / 1620 sipariş, teslim sözü, stok günü, yenileme |
 | `cost.json` | kargo, split cezası, gecikme, kayıp satış ve fırsat maliyeti katsayıları; hız ve işlem süresi |
 | `regimes/stable.json`, `seasonal.json`, `volatile.json` | talep rejimleri: sabit, mevsimsel dalga, rastgele talep şokları |
+| `policies/utility_default.json` | Utility AI kriterleri, tepki eğrileri ve ağırlıkları |
 
 ## Veri seti
 

@@ -34,9 +34,12 @@ namespace Fulfilment.Presentation
         private Label statusLabel;
         private VisualElement progressFill;
         private readonly Dictionary<string, Label> kpis = new Dictionary<string, Label>();
-        private VisualElement infoPanel;
-        private Label infoTitle;
-        private Label infoBody;
+        private DecisionPanel decisionPanel;
+        private SidePanel sidePanel;
+        private Sparkline trend;
+        private int trendService;
+        private int trendStockout;
+        private bool cardsDirty;
         private readonly List<(Label label, Transform target, Vector3 offset)> mapLabels = new List<(Label, Transform, Vector3)>();
         private float refreshTimer;
         private bool labelsDirty;
@@ -55,12 +58,14 @@ namespace Fulfilment.Presentation
 
             BuildTopBar();
             BuildKpiStrip();
-            BuildInfoPanel();
+            decisionPanel = new DecisionPanel();
+            root.Add(decisionPanel.Root);
 
             if (runner != null)
             {
                 runner.EpisodeStarted += OnEpisodeStarted;
                 runner.EpisodeFinished += OnEpisodeFinished;
+                runner.Stepped += OnStepped;
                 if (runner.Engine != null) OnEpisodeStarted(runner.Engine);
             }
         }
@@ -70,6 +75,15 @@ namespace Fulfilment.Presentation
             if (runner == null) return;
             runner.EpisodeStarted -= OnEpisodeStarted;
             runner.EpisodeFinished -= OnEpisodeFinished;
+            runner.Stepped -= OnStepped;
+        }
+
+        /// <summary>The scenario panel reads the loaded configs, so it is built once the runner has them.</summary>
+        private void EnsureSidePanel()
+        {
+            if (sidePanel != null || runner == null || runner.Configs == null) return;
+            sidePanel = new SidePanel(runner);
+            root.Add(sidePanel.Root);
         }
 
         // ---------------------------------------------------------------- layout
@@ -146,21 +160,18 @@ namespace Fulfilment.Presentation
                 strip.Add(card);
                 kpis[key] = value;
             }
-        }
 
-        private void BuildInfoPanel()
-        {
-            infoPanel = Panel("info-panel");
-            infoTitle = new Label();
-            infoTitle.AddToClassList("info-title");
-            infoBody = new Label();
-            infoBody.AddToClassList("info-body");
-            var hint = new Label("Haritada bir depoya, bölgeye ya da pakete tıklayın. Esc: seçimi kaldır.");
-            hint.AddToClassList("hint");
-            infoPanel.Add(infoTitle);
-            infoPanel.Add(infoBody);
-            infoPanel.Add(hint);
-            root.Add(infoPanel);
+            var trendCard = new VisualElement();
+            trendCard.AddToClassList("kpi");
+            trendCard.AddToClassList("trend-card");
+            trend = new Sparkline();
+            trendService = trend.AddSeries(Palette.Ok);
+            trendStockout = trend.AddSeries(Palette.Critical);
+            var trendCaption = new Label("Saatlik trend: servis (yeşil), stok bitmesi ×5 (kırmızı)");
+            trendCaption.AddToClassList("kpi-caption");
+            trendCard.Add(trend);
+            trendCard.Add(trendCaption);
+            strip.Add(trendCard);
         }
 
         private static VisualElement Panel(string cls)
@@ -184,6 +195,11 @@ namespace Fulfilment.Presentation
         {
             episodeLabel.text = $"Senaryo {Cap(runner.Scenario)} · Rejim {Cap(runner.Regime)} · Politika {runner.Policy} · Seed {runner.Seed}";
             statusLabel.text = "";
+            EnsureSidePanel();
+            sidePanel?.SyncFromRunner();
+            cardsDirty = true;
+            trend.ClearData();
+            trend.Capacity = engine.EpisodeTicks / SimTime.TicksPerHour + 1;
             labelsDirty = true; // the map may rebuild after us in the same event; place labels next frame
             Refresh();
         }
@@ -222,6 +238,11 @@ namespace Fulfilment.Presentation
             {
                 RebuildMapLabels();
                 labelsDirty = false;
+            }
+            if (cardsDirty && sidePanel != null && map != null && map.Centers.Count > 0 && runner.Engine != null)
+            {
+                sidePanel.BuildCards(runner.Engine);
+                cardsDirty = false;
             }
             PlaceMapLabels();
 
@@ -298,10 +319,18 @@ namespace Fulfilment.Presentation
             kpis["ontime"].EnableInClassList("bad", k.DeliveredOrders > 0 && k.OnTimeRate < 0.95);
             kpis["stockout"].EnableInClassList("bad", k.StockoutRate > 0.05);
 
-            ISelectable selected = selection != null ? selection.Current : null;
-            infoPanel.EnableInClassList("empty", selected == null);
-            infoTitle.text = selected?.Title ?? "Seçim yok";
-            infoBody.text = selected != null ? selected.Describe(engine) : "";
+            decisionPanel.Refresh(engine, selection != null ? selection.Current : null);
+            sidePanel?.Refresh(engine, map);
+        }
+
+        /// <summary>One trend sample per simulated hour while orders are coming in.</summary>
+        private void OnStepped(IReadOnlyList<SimEvent> events)
+        {
+            SimulationEngine engine = runner.Engine;
+            if (engine.Tick % SimTime.TicksPerHour != 0 || engine.Tick > engine.EpisodeTicks) return;
+            KpiTracker k = engine.Kpis;
+            trend.Add(trendService, k.CompletedOrders > 0 ? (float)k.ServiceLevel : 1f);
+            trend.Add(trendStockout, (float)k.StockoutRate * 5f);
         }
 
         private static string Percent(double v) => "%" + (v * 100.0).ToString("0.0", Tr);

@@ -7,11 +7,14 @@ namespace Fulfilment.AI
     /// order; when no single center can, take the plan that loses the fewest units, then the shortest
     /// average distance. Stock levels, queues, cost and lateness are ignored.
     /// </summary>
-    public sealed class NearestPolicy : IFulfilmentPolicy
+    public sealed class NearestPolicy : IFulfilmentPolicy, IExplainablePolicy
     {
-        public string Name => "Nearest";
+        public const string RuleText = "Önce en az ürün kaybettiren planlar; sonra tek depodan gönderim; sonra en kısa yol mesafesi.";
 
-        public void Reset(int seed) { }
+        public string Name => "Nearest";
+        public DecisionTrace LastTrace { get; private set; }
+
+        public void Reset(int seed) => LastTrace = null;
 
         public int Choose(DecisionContext context)
         {
@@ -19,6 +22,7 @@ namespace Fulfilment.AI
             for (int i = 1; i < context.Candidates.Count; i++)
                 if (IsBetter(context, i, best))
                     best = i;
+            LastTrace = new DecisionTrace { Policy = Name, Rule = RuleText, Chosen = best };
             return best;
         }
 

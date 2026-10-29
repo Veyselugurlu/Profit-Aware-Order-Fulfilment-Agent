@@ -1,0 +1,10 @@
+{
+  "name": "utility_default",
+  "criteria": [
+    { "key": "cost",  "weight": 0.25, "curve": "linear",   "exponent": 1.0, "midpoint": 0,  "scale": 1  },
+    { "key": "time",  "weight": 0.20, "curve": "logistic", "exponent": 1.0, "midpoint": 30, "scale": 30 },
+    { "key": "stock", "weight": 0.25, "curve": "power",    "exponent": 0.5, "midpoint": 0,  "scale": 1  },
+    { "key": "split", "weight": 0.10, "curve": "linear",   "exponent": 1.0, "midpoint": 0,  "scale": 1  },
+    { "key": "fill",  "weight": 0.20, "curve": "power",    "exponent": 2.0, "midpoint": 0,  "scale": 1  }
+  ]
+}
