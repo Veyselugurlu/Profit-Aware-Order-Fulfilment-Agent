@@ -1,0 +1,11 @@
+{
+  "name": "smoke_train",
+  "description": "Quick check on training seeds (pipeline test and calibration; never reported as a result).",
+  "seedSet": "train",
+  "policies": ["Nearest", "LowestCost", "Utility"],
+  "scenarios": ["medium"],
+  "regimes": ["stable"],
+  "stockMultiplier": 1.0,
+  "splitPenalty": -1,
+  "writeOrderLogs": false
+}

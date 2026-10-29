@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Fulfilment.Experiments;
 using Fulfilment.Presentation;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -88,6 +89,7 @@ namespace Fulfilment.Editor
         [MenuItem("Fulfilment/Build Windows Player")]
         public static void BuildWindowsPlayer()
         {
+            WriteBuildInfo();
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath },
@@ -99,6 +101,16 @@ namespace Fulfilment.Editor
             if (report.summary.result != BuildResult.Succeeded)
                 throw new InvalidOperationException($"Build {report.summary.result}, {report.summary.totalErrors} errors");
             Debug.Log($"{Marker} player built: {PlayerPath} ({report.summary.totalSize / (1024 * 1024)} MB)");
+        }
+
+        /// <summary>Records the commit the player is built from, so experiments run in the player know their code version.</summary>
+        private static void WriteBuildInfo()
+        {
+            string projectRoot = Path.GetDirectoryName(Application.dataPath) ?? ".";
+            ExperimentProvenance git = ExperimentCli.GitProvenance(projectRoot);
+            var info = new BuildInfo { commit = git.GitCommit, dirty = git.GitDirty, builtUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") };
+            File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "build_info.json"), JsonUtility.ToJson(info, true));
+            AssetDatabase.Refresh();
         }
 
         public static void BuildSceneAndPlayerBatch()

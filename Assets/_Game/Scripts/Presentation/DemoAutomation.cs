@@ -37,6 +37,14 @@ namespace Fulfilment.Presentation
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
+
+            // Headless experiment in the player: -batchmode -nographics -experiment vize_prelim [-out dir]
+            string experiment = Arg(args, "-experiment");
+            if (experiment != null)
+            {
+                RunExperimentAndQuit(experiment, Arg(args, "-out"));
+                return;
+            }
             string scenario = Arg(args, "-scenario"), regime = Arg(args, "-regime"), policy = Arg(args, "-policy"), seed = Arg(args, "-seed");
             if (scenario != null || regime != null || policy != null || seed != null)
                 runner.Configure(scenario ?? runner.Scenario, regime ?? runner.Regime, policy ?? runner.Policy,
@@ -86,6 +94,23 @@ namespace Fulfilment.Presentation
                 Application.Quit();
                 quitAfter = -1f;
             }
+        }
+
+        private static void RunExperimentAndQuit(string name, string outDir)
+        {
+            int exitCode = 0;
+            try
+            {
+                outDir ??= Path.Combine(Path.GetDirectoryName(Application.dataPath) ?? ".", "results", name);
+                var results = ExperimentLauncher.Run(name, outDir, ExperimentLauncher.FromBuildInfo(), line => Debug.Log("[Experiment] " + line));
+                Debug.Log($"[Experiment] done: {results.Count} episodes → {outDir}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[Experiment] FAILED " + e);
+                exitCode = 1;
+            }
+            Application.Quit(exitCode);
         }
 
         private void WriteDiagnostics()
