@@ -25,8 +25,11 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-# Categorical slots 1-3 of the reference palette (validated all-pairs, light mode); fixed order, never cycled.
-POLICY_COLOURS = {"Nearest": "#2a78d6", "LowestCost": "#eb6834", "Utility": "#1baf7a"}
+# Categorical slots 1-4 of the reference palette in fixed order, never cycled. Policies sit side by side in a fixed
+# order, so only adjacent pairs must separate (validated, light mode); a marker shape per policy is the secondary
+# encoding, and every figure has a legend and a table next to it.
+POLICY_COLOURS = {"Nearest": "#2a78d6", "LowestCost": "#eb6834", "Utility": "#1baf7a", "Evolved": "#eda100"}
+POLICY_MARKERS = {"Nearest": "o", "LowestCost": "s", "Utility": "D", "Evolved": "^"}
 INK, INK_MUTED, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 SCENARIOS = ["low", "medium", "high"]
 SCENARIO_TR = {"low": "Low", "medium": "Medium", "high": "High"}
@@ -85,11 +88,16 @@ def paired(df: pd.DataFrame, focus: str, keys: list[str]) -> pd.DataFrame:
                 except ValueError:
                     w_p = float("nan")
                 better = np.sum(np.sign(d) * DIRECTION[metric] > 0)
+                # Spell the direction out so nobody has to remember that mean_diff is focus minus versus.
+                gain = d.mean() * DIRECTION[metric]
+                better_policy = focus if gain > 0 else other if gain < 0 else "tie"
+                significant = bool(not np.isnan(lo) and (lo > 0 or hi < 0))
                 rows.append({**dict(zip(keys, key)), "focus": focus, "versus": other, "metric": metric,
                              "n": len(d), "mean_diff": d.mean(), "std_diff": sd, "ci95_low": lo, "ci95_high": hi,
                              "rel_diff_pct": 100 * d.mean() / abs(b.mean()) if b.mean() != 0 else float("nan"),
                              "t_test_p": t_p, "wilcoxon_p": w_p, "cohen_dz": d.mean() / sd if sd > 0 else float("nan"),
-                             "focus_better_seeds": int(better)})
+                             "focus_better_seeds": int(better), "better_policy": better_policy,
+                             "significant_95": significant})
     return pd.DataFrame(rows)
 
 
@@ -150,7 +158,7 @@ def fig_profit_difference(runs: pd.DataFrame, reference: str, figdir: Path) -> N
                 xs.append(j + (i - (len(policies) - 1) / 2) * 0.2)
                 ys.append(d.mean())
                 err.append(d.mean() - lo)
-            ax.errorbar(xs, ys, yerr=err, fmt="o", ms=6, color=POLICY_COLOURS[policy], elinewidth=2, capsize=0,
+            ax.errorbar(xs, ys, yerr=err, fmt=POLICY_MARKERS[policy], ms=6, color=POLICY_COLOURS[policy], elinewidth=2, capsize=0,
                         label=f"{policy} − {reference}")
         ax.set_xticks(range(len(SCENARIOS)), [SCENARIO_TR[s] for s in SCENARIOS])
         ax.set_title(REGIME_TR[regime], color=INK, fontsize=10)
@@ -174,10 +182,10 @@ def fig_policy_metric(df: pd.DataFrame, metric: str, label: str, scale: float, f
                 if len(v) == 0:
                     continue
                 lo, hi = ci95(v)
-                xs.append(j + (i - (len(policies) - 1) / 2) * 0.2)
+                xs.append(j + (i - (len(policies) - 1) / 2) * 0.17)
                 ys.append(v.mean())
                 err.append(v.mean() - lo)
-            ax.errorbar(xs, ys, yerr=err, fmt="o", ms=6, color=POLICY_COLOURS[policy], elinewidth=2, capsize=0, label=policy)
+            ax.errorbar(xs, ys, yerr=err, fmt=POLICY_MARKERS[policy], ms=6, color=POLICY_COLOURS[policy], elinewidth=2, capsize=0, label=policy)
         ax.set_xticks(range(len(SCENARIOS)), [SCENARIO_TR[s] for s in SCENARIOS])
         ax.set_title(REGIME_TR[regime], color=INK, fontsize=10)
     axes[0].set_ylabel(label, color=INK, fontsize=9)
@@ -226,7 +234,8 @@ def main() -> None:
     pooled = pd.read_csv(out / "comparisons_pooled.csv")
     key = pooled[pooled.metric.isin(["profit", "service_level", "late_rate", "split_rate", "stockout_rate"])]
     print(f"{len(runs)} episode, politikalar: {', '.join(runs.policy.unique())}")
-    print(key[["scenario", "versus", "metric", "mean_diff", "ci95_low", "ci95_high", "rel_diff_pct", "t_test_p", "focus_better_seeds", "n"]]
+    print("mean_diff = focus - versus; better_policy names the better one for that metric")
+    print(key[["scenario", "versus", "metric", "mean_diff", "ci95_low", "ci95_high", "t_test_p", "focus_better_seeds", "n", "better_policy", "significant_95"]]
           .round(4).to_string(index=False))
 
 
