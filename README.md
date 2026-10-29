@@ -9,13 +9,17 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 - **Zorunlu AI 1:** açıklanabilir Utility AI (en az 4 normalize kriter, her kararın puan dökümü arayüzde)
 - **Zorunlu AI 2:** zamanla karar ağırlıklarını uyarlayan öğrenen ajan (Contextual Bandit veya RL; vize sonrası)
 
+![Simülasyon ekranı](docs/images/s03_map_high.png)
+
+*High yük, Nearest politikası, 8x hız. Halkalar depoların stok durumunu, depoların altındaki çubuklar paketleme kuyruğunu gösterir; turkuaz paketler standart, sarılar ekspres siparişlerdir. Sağ panelde seçili deponun bilgileri vardır.*
+
 ## Durum
 
 | Sprint | Tarih | Konu | Durum |
 |---|---|---|---|
 | S1 | 25–27 Eki | Kurulum, domain modeli, sipariş üretici, veri profili | tamamlandı |
 | S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
-| S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | — |
+| S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | tamamlandı |
 | S4 | 3–5 Kas | Utility AI ve arayüz panelleri | — |
 | S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | — |
 
@@ -29,7 +33,37 @@ Her sprint ayrı bir `feature/sNN-...` dalında geliştirilir ve Pull Request il
 ## Kurulum ve çalıştırma
 
 1. Unity Hub → Add project from disk → bu klasör.
-2. Ana sahne ve build S3'te eklenecek.
+2. `Assets/_Game/Scenes/Main.unity` → **Play**.
+3. Sahne kod ile kurulur: menü **Fulfilment → Build Main Scene**. Windows build: **Fulfilment → Build Windows Player** (çıktı `Builds/ProfitFulfilmentAgent/`).
+
+```bash
+Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.SceneBuilder.BuildSceneAndPlayerBatch -logFile build.log
+```
+
+### Kontroller
+
+| Girdi | İşlev |
+|---|---|
+| Başlat / Duraklat, `Space` | simülasyonu başlatır veya duraklatır |
+| Adım, `N` | bir simülasyon dakikası ilerletir |
+| Sıfırla, `R` | episode'u aynı seed ile baştan kurar |
+| 1x 2x 4x 8x, `1`–`4` | hız (1x'te bir saniye = 12 simülasyon dakikası) |
+| Sol tık | depo, bölge veya paketi seçer; bilgileri sağ panelde |
+| Sağ/orta tuşla sürükleme, `WASD` | haritayı kaydırır |
+| Fare tekerleği, `F` | yakınlaştırır; `F` haritayı ekrana sığdırır |
+| `Esc` | seçimi kaldırır |
+
+### Komut satırı (build)
+
+```bash
+Builds/ProfitFulfilmentAgent/ProfitFulfilmentAgent.exe -scenario high -regime volatile -policy LowestCost -seed 3 -speed 4 -autoplay
+```
+
+Ek parametreler: `-select FC-D` (açılışta seç), `-screenshot dosya.png -screenshotAt 15`, `-fpsLog fps.txt -quitAfter 30`.
+
+### Performans
+
+1600×900 ve 1280×720'de, High senaryo 8x hızda ortalama 60 FPS (dikey senkron sınırı), en kötü kare 17–38 ms (NVIDIA RTX 3050 Ti Laptop).
 
 ## Testler
 
@@ -102,8 +136,7 @@ S10'da tamamlanacak. Bu bölümde Utility AI'ın oyunlardaki rolü (NPC'lerin ih
 |---|---|
 | UCI Online Retail II veri seti | CC BY 4.0 |
 | Kod | ders projesi, tüm hakları saklıdır |
-
-Kullanılacak görsel asset'ler eklendikçe bu tabloya yazılacak.
+| İkonlar ve harita zemini | harici asset yok; `SpriteFactory` ile kod içinde çizilir |
 
 ## Yapay zekâ kullanımı
 
