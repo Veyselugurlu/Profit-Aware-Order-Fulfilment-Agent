@@ -154,6 +154,25 @@ Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.ExperimentCli.E
 python tools/analyze_evolution.py results/evolve_profiles
 ```
 
+### Dersin script'leri birebir: Stay on Platform
+
+Dersin dört script'i (`DNA`, `Brain`, `PopulationManager`, `DeathZone`) `Assets/_Game/Week3Lab/Scripts/` altında değiştirilmeden durur; yalnızca TODO A–D sunudaki çözümlerle doldurulmuştur (git geçmişinde ayrı commit). `Assets/_Game/Week3Lab/Week3_StayOnPlatform.unity` sahnesi Play ile çalışır; build'de `-week3lab` ile açılır. Sınıf deneyi (%0 / %10 / %30 mutasyon × seed 2026–2028, 24 birey, 8 sn deneme, 30 nesil) script'lere dokunmadan, `PopulationManager`'ın nesil log'u okunarak koşturulur:
+
+| Mutasyon | 1. nesil ortalama | 30. nesil ortalama | 30. nesil en iyi | Hayatta kalan (24) |
+|---|---|---|---|---|
+| %0 | 8,75 | 15,62 | 16,02 | 24,0 |
+| %10 | 8,75 | 14,37 | 16,09 | 22,3 |
+| %30 | 8,75 | 12,19 | 16,06 | 21,0 |
+
+İki genli tabloda yalnızca 9 strateji olduğu için iyi çözüm ("zeminde ileri, kenarda dön") ilk nesillerde bulunur; mutasyon burada yalnızca ortalamayı düşürür. Sipariş ajanındaki 65.536 stratejilik tabloda ise %0 mutasyon erken kilitlenir; mutasyonun değeri arama uzayının büyüklüğüne bağlıdır.
+
+![Week 3 lab](results/week3lab/figures/week3lab.png)
+
+```bash
+bash tools/run_week3lab.sh results/week3lab
+python tools/analyze_week3lab.py results/week3lab
+```
+
 Föye göre genetik algoritma tek başına zorunlu Game AI çekirdeği sayılmaz; burada karşılaştırma yöntemi olarak raporlanır. Zorunlu öğrenen ajan (Contextual Bandit veya pekiştirmeli öğrenme) sonraki aşamadadır.
 
 ## Deneyleri tekrar üretme
