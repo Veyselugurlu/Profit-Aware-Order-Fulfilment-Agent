@@ -109,11 +109,15 @@ public sealed class PopulationManager : MonoBehaviour
         int elite = Mathf.Clamp(eliteCount, 0, populationSize);
         for (int i = 0; i < elite; i++) children.Add(sorted[i].dna.Copy());
 
-        // TODO D: select parents from the best half, crossover and mutate.
-        // Starter baseline: generate independent random genomes (NO evolution).
+        // TODO D (lecture solution 09): parents from the better half, crossover + mutation, until the size is reached.
+        int pool = Mathf.Max(2, sorted.Count / 2);
         while (children.Count < populationSize)
         {
-            children.Add(DNA.RandomGenome());
+            DNA a = sorted[UnityEngine.Random.Range(0, pool)].dna;
+            DNA b = sorted[UnityEngine.Random.Range(0, pool)].dna;
+            DNA child = DNA.Cross(a, b);
+            child.Mutate(mutationRate);
+            children.Add(child);
         }
         return children;
     }

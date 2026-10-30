@@ -26,8 +26,8 @@ public sealed class DNA
     {
         if (parentA == null || parentB == null) throw new ArgumentNullException("parent");
         // Two-gene one-point crossover: ground policy from A, edge policy from B.
-        // TODO A: replace with a true one-point crossover from A and B.
-        return parentA.Copy();
+        // TODO A (lecture solution 05): first gene from A, second gene from B.
+        return new DNA(parentA.GetGene(0), parentB.GetGene(1));
     }
 
     public void Mutate(float probabilityPerGene)
@@ -37,8 +37,9 @@ public sealed class DNA
         {
             if (UnityEngine.Random.value >= p) continue;
             // Guarantee a different value rather than occasionally 'mutating' to itself.
-            // TODO B: choose a DIFFERENT action gene with probability p.
-            // Deliberately left unchanged for the starter activity.
+            // TODO B (lecture solution 06): Random.Range(1, 3) is 1 or 2, so mod 3 always gives a different action.
+            int shift = UnityEngine.Random.Range(1, 3);
+            genes[i] = (genes[i] + shift) % 3;
         }
     }
 

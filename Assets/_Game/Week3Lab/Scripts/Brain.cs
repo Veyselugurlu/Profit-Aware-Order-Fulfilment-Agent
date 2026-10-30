@@ -44,9 +44,9 @@ public sealed class Brain : MonoBehaviour
     {
         if (eyes == null || safePlatform == null) return false;
         Vector3 origin = eyes.position + transform.forward * lookAhead;
-        // TODO C: raycast vertically DOWN from origin; confirm hit.collider == safePlatform.
-        // Starter returns true, so the bot does not yet react to the edge.
-        bool found = true;
+        // TODO C (lecture solution 04): raycast vertically DOWN from a point ahead; only the safe platform counts as ground.
+        bool found = Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayLength, ~0, QueryTriggerInteraction.Ignore)
+                     && hit.collider == safePlatform;
         Debug.DrawRay(origin, Vector3.down * rayLength, found ? Color.green : Color.red);
         return found;
     }
