@@ -143,6 +143,19 @@ def main() -> None:
     n["stockout_min"] = tr(runs.groupby(["policy", "scenario"]).stockout_rate.mean().min() * 100, 1)
     n["stockout_max"] = tr(runs.groupby(["policy", "scenario"]).stockout_rate.mean().max() * 100, 1)
 
+    # Calibration check: the two baselines on the training seeds (never on test seeds).
+    calib = args.results / "calibration_train"
+    if (calib / "runs.csv").exists():
+        cr = pd.read_csv(calib / "runs.csv")
+        n["calib_episodes"] = tr(len(cr))
+        for s in SCENARIOS:
+            per_policy = cr[cr.scenario == s].groupby("policy")
+            for metric, short in (("stockout_rate", "stockout"), ("split_rate", "split"), ("late_rate", "late"),
+                                  ("service_level", "service")):
+                values = per_policy[metric].mean() * 100
+                n[f"calib_{s}_{short}_min"] = tr(values.min(), 1)
+                n[f"calib_{s}_{short}_max"] = tr(values.max(), 1)
+
     def table_from_csv(path: Path) -> dict:
         t = pd.read_csv(path, dtype=str)
         rows = [[cell.replace(".", ",") if any(ch.isdigit() for ch in cell) and "[" not in cell else cell

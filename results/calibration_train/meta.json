@@ -1,0 +1,18 @@
+{
+  "experiment": "calibration_train",
+  "description": "Environment calibration check with the two baselines only, on training seeds 1-40 (never on test seeds): shows that baselines face stock-outs, splits and (at high load) lateness, so the problem is neither trivial nor hopeless.",
+  "created_utc": "2026-10-30T11:50:43Z",
+  "git_commit": "c602f872d56d576895456e84b89b797c1323cfb4",
+  "git_dirty": false,
+  "config_sha256": "8f47d1faa59689a3ed00afb0429e487190bd5daf3700825c82f1eecb9d926882",
+  "unity_version": "6000.3.25f1",
+  "seed_set": "train",
+  "seeds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
+  "policies": ["Nearest", "LowestCost"],
+  "scenarios": ["low", "medium", "high"],
+  "regimes": ["stable", "seasonal", "volatile"],
+  "stock_multiplier": 1,
+  "split_penalty_override": -1,
+  "episodes": 720,
+  "wall_seconds": 77.794
+}
