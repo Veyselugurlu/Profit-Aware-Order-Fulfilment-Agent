@@ -164,8 +164,8 @@ def fig_profit_difference(runs: pd.DataFrame, reference: str, figdir: Path) -> N
         ax.set_title(REGIME_TR[regime], color=INK, fontsize=10)
     axes[0].set_ylabel("Kâr farkı (bin TL, aynı seed)", color=INK, fontsize=9)
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper right", frameon=False, fontsize=9)
-    fig.tight_layout(rect=(0, 0, 0.86, 1))
+    fig.legend(handles, labels, loc="upper center", ncol=len(labels), frameon=False, fontsize=9, bbox_to_anchor=(0.5, 1.02))
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     save(fig, figdir / "profit_difference")
 
 
@@ -190,8 +190,8 @@ def fig_policy_metric(df: pd.DataFrame, metric: str, label: str, scale: float, f
         ax.set_title(REGIME_TR[regime], color=INK, fontsize=10)
     axes[0].set_ylabel(label, color=INK, fontsize=9)
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper right", frameon=False, fontsize=9)
-    fig.tight_layout(rect=(0, 0, 0.9, 1))
+    fig.legend(handles, labels, loc="upper center", ncol=len(labels), frameon=False, fontsize=9, bbox_to_anchor=(0.5, 1.02))
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     save(fig, figdir / name)
 
 
