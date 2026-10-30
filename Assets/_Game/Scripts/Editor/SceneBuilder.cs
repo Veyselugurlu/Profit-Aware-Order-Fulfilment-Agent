@@ -21,6 +21,7 @@ namespace Fulfilment.Editor
     public static class SceneBuilder
     {
         public const string ScenePath = "Assets/_Game/Scenes/Main.unity";
+        public const string Week3LabScenePath = "Assets/_Game/Week3Lab/Week3_StayOnPlatform.unity";
         private const string MaterialPath = "Assets/_Game/Art/SpriteUnlit.mat";
         private const string PanelSettingsPath = "Assets/_Game/UI/HudPanelSettings.asset";
         private const string ThemePath = "Assets/_Game/UI/RuntimeTheme.tss";
@@ -81,9 +82,18 @@ namespace Fulfilment.Editor
             EditorSceneManager.SaveScene(scene, ScenePath);
             if (document.panelSettings == null || hud == null)
                 throw new InvalidOperationException("HUD panel settings were not saved with the scene");
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+            RegisterScenes();
             AssetDatabase.SaveAssets();
             Debug.Log($"{Marker} scene saved to {ScenePath}");
+        }
+
+        /// <summary>Main scene first (it starts the player), then the Week 3 lab scene if it has been built.</summary>
+        public static void RegisterScenes()
+        {
+            var scenes = new System.Collections.Generic.List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(ScenePath, true) };
+            if (File.Exists(Week3LabScenePath))
+                scenes.Add(new EditorBuildSettingsScene(Week3LabScenePath, true));
+            EditorBuildSettings.scenes = scenes.ToArray();
         }
 
         [MenuItem("Fulfilment/Build Windows Player")]
@@ -92,7 +102,7 @@ namespace Fulfilment.Editor
             WriteBuildInfo();
             var options = new BuildPlayerOptions
             {
-                scenes = new[] { ScenePath },
+                scenes = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(System.Linq.Enumerable.Where(EditorBuildSettings.scenes, s => s.enabled), s => s.path)),
                 locationPathName = PlayerPath,
                 target = BuildTarget.StandaloneWindows64,
                 options = BuildOptions.None

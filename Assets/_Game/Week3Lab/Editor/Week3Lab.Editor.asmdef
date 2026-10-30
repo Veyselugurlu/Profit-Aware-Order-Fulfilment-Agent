@@ -1,0 +1,19 @@
+{
+    "name": "Week3Lab.Editor",
+    "rootNamespace": "Week3Lab.Editor",
+    "references": [
+        "Week3Lab",
+        "Fulfilment.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

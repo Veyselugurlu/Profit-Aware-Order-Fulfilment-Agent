@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Game/Scenes/Main.unity
     guid: 6a91efb6471e2c2489a205e8ffd7f494
+  - enabled: 1
+    path: Assets/_Game/Week3Lab/Week3_StayOnPlatform.unity
+    guid: a62d41c9718dc284494c09291fd885ec
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

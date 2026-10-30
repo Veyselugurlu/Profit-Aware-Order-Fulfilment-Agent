@@ -46,6 +46,13 @@ namespace Fulfilment.Presentation
         {
             string[] args = Environment.GetCommandLineArgs();
 
+            // Week 3 lab: -week3lab opens the Stay on Platform scene (the unchanged lecture scripts).
+            if (Array.IndexOf(args, "-week3lab") >= 0)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Week3_StayOnPlatform");
+                return;
+            }
+
             // Headless experiment in the player: -batchmode -nographics -experiment vize_prelim [-out dir]
             string experiment = Arg(args, "-experiment");
             if (experiment != null)
