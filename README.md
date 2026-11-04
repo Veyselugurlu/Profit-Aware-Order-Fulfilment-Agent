@@ -23,7 +23,7 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 | S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
 | S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | tamamlandı |
 | S4 | 3–5 Kas | Utility AI ve arayüz panelleri | tamamlandı |
-| S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | deneyler tamamlandı; makale ve sunum sürüyor |
+| S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | tamamlandı |
 
 Her sprint ayrı bir `feature/sNN-...` dalında geliştirilir ve Pull Request ile `main` dalına birleştirilir.
 
@@ -119,7 +119,7 @@ Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.HeadlessRun.Run
 
 ## Ön sonuçlar (Paper Draft I)
 
-`vize_prelim` deneyi: Nearest, LowestCost, Utility ve Evolved × 3 yük × 3 rejim × 10 test seed (1001–1010), 360 episode. Her seed'de üç politika aynı sipariş akışıyla koşturulur; farklar aynı seed ve rejim üzerinden eşleşik olarak hesaplanır (n = 30). Ham veri `results/vize_prelim/runs.csv`, hangi kod ve ayarlarla üretildiği `meta.json` içindedir.
+`vize_prelim` deneyi: Nearest, LowestCost, Utility ve Evolved × 3 yük × 3 rejim × 10 test seed (1001–1010), 360 episode. Her seed'de dört politika aynı sipariş akışıyla koşturulur; farklar aynı seed ve rejim üzerinden eşleşik olarak hesaplanır (n = 30). Ham veri `results/vize_prelim/runs.csv`, hangi kod ve ayarlarla üretildiği `meta.json` içindedir.
 
 | Yük | Politika | Kâr (bin TL) | Servis (%) | Gecikme (%) | Split (%) | Stock-out (%) |
 |---|---|---|---|---|---|---|
