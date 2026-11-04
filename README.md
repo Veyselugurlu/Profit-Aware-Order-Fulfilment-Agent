@@ -9,6 +9,8 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 - **Zorunlu AI 1:** açıklanabilir Utility AI: her aday plan 5 kritere göre (maliyet, süre, stok sağlığı, split, doluluk) puanlanır, ağırlıklı toplamı en yüksek plan seçilir; her kararın puan dökümü arayüzde
 - **Zorunlu AI 2:** zamanla karar ağırlıklarını uyarlayan öğrenen ajan (Contextual Bandit veya RL; vize sonrası)
 
+![Demo](docs/images/demo.gif)
+
 ![Simülasyon ekranı](docs/images/s04_utility_high.png)
 
 *High yük, Utility AI, 8x hız. Solda senaryo paneli ve depoların stok kartları; ortada harita (halkalar stok durumu, çubuklar paketleme kuyruğu, turkuaz/sarı kareler standart/ekspres paketler); sağda son kararın açıklaması: her aday plan için kriter katkıları ve toplam puan. Bu örnekte Utility AI, daha ucuz olan Doğu deposu yerine Güney deposunu seçmiştir, çünkü Doğu deposundan gönderim ürünü güvenlik stoğunun altına indiriyordu.*
@@ -21,7 +23,7 @@ Aynı ürün birden fazla depoda bulunabiliyor. Her sipariş geldiğinde ajan, s
 | S2 | 28–30 Eki | Simülasyon motoru, stok, maliyet modeli, baseline'lar | tamamlandı |
 | S3 | 31 Eki–2 Kas | Harita, A* yol ağı, canlı görselleştirme | tamamlandı |
 | S4 | 3–5 Kas | Utility AI ve arayüz panelleri | tamamlandı |
-| S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | — |
+| S5 | 6–8 Kas | Deney altyapısı, ön sonuçlar, Paper Draft I | tamamlandı |
 
 Her sprint ayrı bir `feature/sNN-...` dalında geliştirilir ve Pull Request ile `main` dalına birleştirilir.
 
@@ -58,6 +60,7 @@ Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.SceneBuilder.Bu
 - **Sol:** senaryo paneli (yük, rejim, politika, seed, stok seviyesi, split cezası; *Uygula* episode'u yeniden kurar, kod değişikliği gerekmez) ve her depo için stok kartı (stok sağlığı, tükenen ürünler, kuyruk, en kritik ürünler).
 - **Sağ:** karar açıklaması. Seçim yokken son kararı, pakete veya bölgeye tıklanınca o siparişin kararını, depoya tıklanınca depo bilgisini gösterir.
 - **Alt:** 8 canlı KPI ve saatlik servis seviyesi / stok bitmesi trendi.
+- **Episode sonu özeti:** çalışan politikanın KPI'ları, diğer politikaların aynı seed ve aynı siparişlerle ekransız sonuçlarıyla yan yana; satır başına en iyi değer işaretli; "X ile oynat" aynı episode'u başka politikayla baştan oynatır. Üst çubuktaki *Sona atla* episode'u hemen bitirir.
 
 ### Komut satırı (build)
 
@@ -65,7 +68,7 @@ Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.SceneBuilder.Bu
 Builds/ProfitFulfilmentAgent/ProfitFulfilmentAgent.exe -scenario high -regime volatile -policy Utility -seed 3 -speed 4 -autoplay
 ```
 
-Ek parametreler: `-select FC-D` (açılışta seç), `-screenshot dosya.png -screenshotAt 15`, `-fpsLog fps.txt -quitAfter 30`.
+Ek parametreler: `-select FC-D` (açılışta seç), `-skipToEndAt 10` (sona atla, özet ekranı), `-screenshot dosya.png -screenshotAt 15`, `-fpsLog fps.txt -quitAfter 30`, `-recordFrames klasör` (demo kareleri), `-batchmode -nographics -experiment ad` (ekransız deney).
 
 ### Performans
 
@@ -114,9 +117,79 @@ Unity menüsü **Fulfilment → Run Headless Check**: iki baseline × 3 yük × 
 Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.HeadlessRun.RunBatch -seed 1 -logFile log.txt
 ```
 
+## Ön sonuçlar (Paper Draft I)
+
+`vize_prelim` deneyi: Nearest, LowestCost, Utility ve Evolved × 3 yük × 3 rejim × 10 test seed (1001–1010), 360 episode. Her seed'de dört politika aynı sipariş akışıyla koşturulur; farklar aynı seed ve rejim üzerinden eşleşik olarak hesaplanır (n = 30). Ham veri `results/vize_prelim/runs.csv`, hangi kod ve ayarlarla üretildiği `meta.json` içindedir.
+
+| Yük | Politika | Kâr (bin TL) | Servis (%) | Gecikme (%) | Split (%) | Stock-out (%) |
+|---|---|---|---|---|---|---|
+| Low | Nearest | 574,3 ± 48,2 | 85,9 ± 5,5 | 0,05 ± 0,27 | 7,27 ± 1,50 | 8,18 ± 4,40 |
+| Low | LowestCost | 575,6 ± 48,0 | 85,9 ± 5,5 | 0,06 ± 0,29 | 6,07 ± 1,33 | 8,16 ± 4,38 |
+| Low | Utility | 577,6 ± 48,7 | 86,2 ± 5,5 | 0,05 ± 0,29 | 5,54 ± 1,01 | 8,07 ± 4,40 |
+| Low | Evolved | 577,2 ± 48,1 | 86,2 ± 5,5 | 0,05 ± 0,29 | 5,49 ± 1,28 | 8,07 ± 4,38 |
+| Medium | Nearest | 943,3 ± 76,6 | 88,3 ± 5,9 | 0,51 ± 0,69 | 4,75 ± 1,47 | 6,82 ± 4,60 |
+| Medium | LowestCost | 944,4 ± 76,7 | 88,4 ± 5,9 | 0,46 ± 0,67 | 3,69 ± 0,93 | 6,82 ± 4,61 |
+| Medium | Utility | 948,2 ± 77,6 | 88,6 ± 5,9 | 0,45 ± 0,69 | 3,53 ± 0,91 | 6,69 ± 4,68 |
+| Medium | Evolved | 949,0 ± 77,1 | 88,8 ± 5,8 | 0,44 ± 0,65 | 3,26 ± 0,98 | 6,62 ± 4,65 |
+| High | Nearest | 1.507,2 ± 123,1 | 84,3 ± 5,9 | 6,26 ± 2,37 | 3,46 ± 1,22 | 6,73 ± 4,98 |
+| High | LowestCost | 1.509,7 ± 122,7 | 84,4 ± 5,8 | 6,02 ± 2,03 | 2,52 ± 1,01 | 6,72 ± 4,97 |
+| High | Utility | 1.521,0 ± 122,9 | 87,1 ± 6,2 | 3,31 ± 2,30 | 2,23 ± 0,84 | 6,46 ± 5,00 |
+| High | Evolved | 1.522,5 ± 122,5 | 87,6 ± 6,2 | 2,82 ± 2,31 | 1,88 ± 0,75 | 6,40 ± 5,02 |
+
+*Ortalama ± standart sapma, hücre başına 30 episode (10 seed × 3 rejim). Seed'ler arası fark büyük olduğu için politikalar eşleşik farklarla karşılaştırılır:* Utility − LowestCost kâr farkı Low'da +2.010 TL (%95 GA [+588, +3.432], p = 0,007), Medium'da +3.782 TL ([+1.649, +5.916], p = 0,001), High'da +11.263 TL ([+5.875, +16.652], p = 0,0002). High yükte Utility gecikme oranını 2,7 puan (yaklaşık %45) düşürür ve servis seviyesini 2,7 puan artırır (p < 0,0001, 30 eşleşmenin 30'unda). GA ile evrimleşen karar tablosu (Evolved), sabit ağırlıklı Utility'ye göre kârda anlamlı fark göstermez; High yükte gecikmeyi 0,49 puan daha düşürür (%3,31 → %2,82, p < 0,001, 30 eşleşmenin 28'inde) ve servis seviyesini 0,47 puan artırır (p < 0,001).
+
+![Kâr farkı](results/vize_prelim/figures/profit_difference.png)
+![Gecikme oranı](results/vize_prelim/figures/late_rate.png)
+
+## Genetik algoritma ile evrimleşen karar tablosu (Hafta 7)
+
+Dersin "Stay on Platform" uygulamasındaki `DNA` / `Brain` / `PopulationManager` yapısı sipariş ajanına uyarlanmıştır. Botun "önümde zemin var mı?" sensörünün yerini üç ikili sensör alır (sipariş ekspres mi, en yakın depoda stok riski var mı, en yakın deponun kuyruğu 30 dakikayı geçti mi). 8 durumun her biri için bir gen, siparişin hangi Utility ağırlık profiliyle (dengeli, maliyet öncelikli, hız öncelikli, stok koruyucu) karar verileceğini seçer. Operatörler dersteki gibidir: tek noktalı çaprazlama, gen başına farklı değere mutasyon, en iyi 2 bireyin korunması, üst yarıdan ebeveyn seçimi, 24 bireylik sabit nüfus. Fitness, 4 eğitim episode'unda sipariş başına kârdır.
+
+Dersin sınıf deneyi tekrarlanmıştır: %0 / %10 / %30 mutasyon × 3 GA seed (2026–2028), 20 nesil. %0 mutasyonda çeşitlilik 5–7 nesilde tek genoma çöker ve en iyi fitness daha düşükte kalır; %10 en iyi sonuca ulaşır; %30 çeşitliliği korur ama ortalama fitness'i düşürür. Doğrulama seed'lerinde (501–510) en iyi çıkan genom `[0, 0, 0, 3, 2, 0, 3, 2]`'dir: ekspres siparişte hız öncelikli, stok riskinde stok koruyucu profil.
+
+![Evrim](results/evolve_profiles/figures/evolution.png)
+
+```bash
+Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.ExperimentCli.Evolve -experiment evolve_profiles -logFile evolve.log
+python tools/analyze_evolution.py results/evolve_profiles
+```
+
+### Dersin script'leri birebir: Stay on Platform
+
+Dersin dört script'i (`DNA`, `Brain`, `PopulationManager`, `DeathZone`) `Assets/_Game/Week3Lab/Scripts/` altında değiştirilmeden durur; yalnızca TODO A–D sunudaki çözümlerle doldurulmuştur (git geçmişinde ayrı commit). `Assets/_Game/Week3Lab/Week3_StayOnPlatform.unity` sahnesi Play ile çalışır; build'de `-week3lab` ile açılır. Sınıf deneyi (%0 / %10 / %30 mutasyon × seed 2026–2028, 24 birey, 8 sn deneme, 30 nesil) script'lere dokunmadan, `PopulationManager`'ın nesil log'u okunarak koşturulur:
+
+| Mutasyon | 1. nesil ortalama | 30. nesil ortalama | 30. nesil en iyi | Hayatta kalan (24) |
+|---|---|---|---|---|
+| %0 | 8,75 | 15,62 | 16,02 | 24,0 |
+| %10 | 8,75 | 14,37 | 16,09 | 22,3 |
+| %30 | 8,75 | 12,19 | 16,06 | 21,0 |
+
+İki genli tabloda yalnızca 9 strateji olduğu için iyi çözüm ("zeminde ileri, kenarda dön") ilk nesillerde bulunur; mutasyon burada yalnızca ortalamayı düşürür. Sipariş ajanındaki 65.536 stratejilik tabloda ise %0 mutasyon erken kilitlenir; mutasyonun değeri arama uzayının büyüklüğüne bağlıdır.
+
+![Week 3 lab](results/week3lab/figures/week3lab.png)
+
+```bash
+bash tools/run_week3lab.sh results/week3lab
+python tools/analyze_week3lab.py results/week3lab
+```
+
+Föye göre genetik algoritma tek başına zorunlu Game AI çekirdeği sayılmaz; burada karşılaştırma yöntemi olarak raporlanır. Zorunlu öğrenen ajan (Contextual Bandit veya pekiştirmeli öğrenme) sonraki aşamadadır.
+
 ## Deneyleri tekrar üretme
 
-S5'te eklenecek. Tüm politikalar aynı test seed'lerinde (1001–1010) koşturulacak, sonuçlar `results/` altına CSV/JSON olarak yazılacak ve makaledeki tablo ile grafikler `tools/` altındaki scriptlerle bu dosyalardan üretilecek.
+Deneyler `Assets/StreamingAssets/configs/experiments/*.json` dosyalarıyla tanımlanır. Seed setleri kodda tek yerde tanımlıdır (`SeedSets`): eğitim 1–40, doğrulama 501–510, test 1001–1010. Raporlanan sonuçlar yalnızca test seed'lerinden gelir; ayarlama ve kalibrasyon eğitim seed'leriyle yapılır.
+
+```bash
+# 1) Deneyi koştur (Unity Editor, ekransız) -> results/vize_prelim/runs.csv + meta.json
+Unity -batchmode -projectPath . -executeMethod Fulfilment.Editor.ExperimentCli.Run -experiment vize_prelim -logFile exp.log
+# veya build ile (aynı sonuç)
+Builds/ProfitFulfilmentAgent/ProfitFulfilmentAgent.exe -batchmode -nographics -experiment vize_prelim -out results/vize_prelim
+
+# 2) Tablolar, eşleşik karşılaştırmalar ve figürler
+python tools/analyze.py results/vize_prelim
+```
+
+`analyze.py` çıktıları: `summary.csv` (politika × yük × rejim için ortalama, std, %95 GA), `comparisons.csv` (Utility'nin her politikaya karşı eşleşik farkı, t-testi, Wilcoxon, Cohen's d; `better_policy` ve `significant_95` sütunları farkın yönünü ve anlamlılığını açıkça yazar), `table_main.csv/.tex`, `figures/*.png|pdf`. Editör ve build aynı deneyde birebir aynı `runs.csv`'yi üretir (çalışma süresi sütunu hariç).
 
 ## Proje yapısı
 

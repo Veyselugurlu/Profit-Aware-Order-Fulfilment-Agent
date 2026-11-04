@@ -1,0 +1,11 @@
+{
+  "name": "calibration_train",
+  "description": "Environment calibration check with the two baselines only, on training seeds 1-40 (never on test seeds): shows that baselines face stock-outs, splits and (at high load) lateness, so the problem is neither trivial nor hopeless.",
+  "seedSet": "train",
+  "policies": ["Nearest", "LowestCost"],
+  "scenarios": ["low", "medium", "high"],
+  "regimes": ["stable", "seasonal", "volatile"],
+  "stockMultiplier": 1.0,
+  "splitPenalty": -1,
+  "writeOrderLogs": false
+}

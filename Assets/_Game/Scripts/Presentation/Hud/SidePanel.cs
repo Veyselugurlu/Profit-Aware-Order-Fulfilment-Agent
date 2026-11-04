@@ -51,7 +51,7 @@ namespace Fulfilment.Presentation
             root.Add(Heading("Senaryo"));
             load = Dropdown("Yük", cfg.Scenarios.Select(s => s.displayName).ToList(), cfg.Scenarios.ToList().FindIndex(s => s.code == runner.Scenario));
             regime = Dropdown("Rejim", cfg.Regimes.Select(r => r.displayName).ToList(), cfg.Regimes.ToList().FindIndex(r => r.code == runner.Regime));
-            policy = Dropdown("Politika", PolicyFactory.Names.ToList(), PolicyFactory.Names.ToList().IndexOf(runner.Policy));
+            policy = Dropdown("Politika", cfg.AvailablePolicies.ToList(), cfg.AvailablePolicies.ToList().IndexOf(runner.Policy));
             seed = new IntegerField("Seed") { value = runner.Seed };
             seed.AddToClassList("field");
             root.Add(seed);
@@ -105,7 +105,7 @@ namespace Fulfilment.Presentation
             ConfigSet cfg = runner.Configs;
             load.index = System.Math.Max(0, cfg.Scenarios.ToList().FindIndex(s => s.code == runner.Scenario));
             regime.index = System.Math.Max(0, cfg.Regimes.ToList().FindIndex(r => r.code == runner.Regime));
-            policy.index = System.Math.Max(0, PolicyFactory.Names.ToList().IndexOf(runner.Policy));
+            policy.index = System.Math.Max(0, cfg.AvailablePolicies.ToList().IndexOf(runner.Policy));
             seed.SetValueWithoutNotify(runner.Seed);
             stock.value = runner.StockMultiplier;
             split.value = runner.SplitPenalty;
@@ -115,7 +115,7 @@ namespace Fulfilment.Presentation
         {
             ConfigSet cfg = runner.Configs;
             runner.SetParameters(stock.value, split.value);
-            runner.Configure(cfg.Scenarios[load.index].code, cfg.Regimes[regime.index].code, PolicyFactory.Names[policy.index], seed.value);
+            runner.Configure(cfg.Scenarios[load.index].code, cfg.Regimes[regime.index].code, cfg.AvailablePolicies[policy.index], seed.value);
         }
 
         /// <summary>Called when an episode starts (the map is rebuilt): one card per center.</summary>

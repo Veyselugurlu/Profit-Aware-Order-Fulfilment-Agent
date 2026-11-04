@@ -1,0 +1,9 @@
+{
+  "note": "Utility weight profiles an adaptive policy can switch between; weights follow the criterion order of utility_default.json (cost, time, stock, split, fill).",
+  "profiles": [
+    { "name": "balanced", "label": "Dengeli",           "weights": [0.25, 0.20, 0.25, 0.10, 0.20] },
+    { "name": "cost",     "label": "Maliyet öncelikli", "weights": [0.50, 0.10, 0.15, 0.10, 0.15] },
+    { "name": "speed",    "label": "Hız öncelikli",     "weights": [0.15, 0.45, 0.15, 0.05, 0.20] },
+    { "name": "stock",    "label": "Stok koruyucu",     "weights": [0.15, 0.15, 0.45, 0.05, 0.20] }
+  ]
+}

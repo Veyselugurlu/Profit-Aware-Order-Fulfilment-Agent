@@ -1,0 +1,24 @@
+{
+  "name": "vize_prelim",
+  "description": "Paper Draft I preliminary results: two baselines, the fixed-weight Utility AI and the GA-evolved decision table (Week 3) on every load level and demand regime, 10 test seeds, paired per seed.",
+  "seedSet": "test",
+  "policies": [
+    "Nearest",
+    "LowestCost",
+    "Utility",
+    "Evolved"
+  ],
+  "scenarios": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "regimes": [
+    "stable",
+    "seasonal",
+    "volatile"
+  ],
+  "stockMultiplier": 1.0,
+  "splitPenalty": -1,
+  "writeOrderLogs": false
+}

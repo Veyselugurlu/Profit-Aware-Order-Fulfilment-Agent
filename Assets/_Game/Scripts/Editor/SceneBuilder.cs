@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Fulfilment.Experiments;
 using Fulfilment.Presentation;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -20,6 +21,7 @@ namespace Fulfilment.Editor
     public static class SceneBuilder
     {
         public const string ScenePath = "Assets/_Game/Scenes/Main.unity";
+        public const string Week3LabScenePath = "Assets/_Game/Week3Lab/Week3_StayOnPlatform.unity";
         private const string MaterialPath = "Assets/_Game/Art/SpriteUnlit.mat";
         private const string PanelSettingsPath = "Assets/_Game/UI/HudPanelSettings.asset";
         private const string ThemePath = "Assets/_Game/UI/RuntimeTheme.tss";
@@ -80,17 +82,27 @@ namespace Fulfilment.Editor
             EditorSceneManager.SaveScene(scene, ScenePath);
             if (document.panelSettings == null || hud == null)
                 throw new InvalidOperationException("HUD panel settings were not saved with the scene");
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
+            RegisterScenes();
             AssetDatabase.SaveAssets();
             Debug.Log($"{Marker} scene saved to {ScenePath}");
+        }
+
+        /// <summary>Main scene first (it starts the player), then the Week 3 lab scene if it has been built.</summary>
+        public static void RegisterScenes()
+        {
+            var scenes = new System.Collections.Generic.List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(ScenePath, true) };
+            if (File.Exists(Week3LabScenePath))
+                scenes.Add(new EditorBuildSettingsScene(Week3LabScenePath, true));
+            EditorBuildSettings.scenes = scenes.ToArray();
         }
 
         [MenuItem("Fulfilment/Build Windows Player")]
         public static void BuildWindowsPlayer()
         {
+            WriteBuildInfo();
             var options = new BuildPlayerOptions
             {
-                scenes = new[] { ScenePath },
+                scenes = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(System.Linq.Enumerable.Where(EditorBuildSettings.scenes, s => s.enabled), s => s.path)),
                 locationPathName = PlayerPath,
                 target = BuildTarget.StandaloneWindows64,
                 options = BuildOptions.None
@@ -99,6 +111,35 @@ namespace Fulfilment.Editor
             if (report.summary.result != BuildResult.Succeeded)
                 throw new InvalidOperationException($"Build {report.summary.result}, {report.summary.totalErrors} errors");
             Debug.Log($"{Marker} player built: {PlayerPath} ({report.summary.totalSize / (1024 * 1024)} MB)");
+        }
+
+        /// <summary>Records the commit the player is built from, so experiments run in the player know their code version.</summary>
+        private static void WriteBuildInfo()
+        {
+            string projectRoot = Path.GetDirectoryName(Application.dataPath) ?? ".";
+            ExperimentProvenance git = ExperimentCli.GitProvenance(projectRoot);
+            var info = new BuildInfo { commit = git.GitCommit, dirty = git.GitDirty, builtUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ") };
+            File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "build_info.json"), JsonUtility.ToJson(info, true));
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// Builds the player from the committed scene without regenerating it (regenerating rewrites object ids,
+        /// which would mark the build as built from uncommitted changes). Use this for release builds.
+        /// </summary>
+        public static void BuildPlayerBatch()
+        {
+            int exitCode = 0;
+            try
+            {
+                BuildWindowsPlayer();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{Marker} FAILED {e}");
+                exitCode = 1;
+            }
+            EditorApplication.Exit(exitCode);
         }
 
         public static void BuildSceneAndPlayerBatch()

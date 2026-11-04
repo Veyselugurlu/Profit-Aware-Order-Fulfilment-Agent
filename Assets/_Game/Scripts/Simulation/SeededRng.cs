@@ -13,7 +13,8 @@ namespace Fulfilment.Simulation
         Replenishment = 2,
         Policy = 3,
         Layout = 4,
-        Regime = 5
+        Regime = 5,
+        Evolution = 6
     }
 
     /// <summary>

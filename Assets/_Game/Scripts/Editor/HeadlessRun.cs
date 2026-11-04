@@ -53,7 +53,7 @@ namespace Fulfilment.Editor
 
             foreach (var regime in configs.Regimes)
                 foreach (var scenario in configs.Scenarios)
-                    foreach (string policyName in PolicyFactory.Names)
+                    foreach (string policyName in configs.AvailablePolicies)
                     {
                         EpisodeResult result = EpisodeRunner.Run(configs.Setup(scenario.code, regime.code, seed), configs.CreatePolicy(policyName));
                         results.Add(result);

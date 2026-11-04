@@ -12,6 +12,7 @@ namespace Fulfilment.Presentation
     /// Command-line control of a player build, for demos, screenshots and FPS checks:
     /// -scenario medium -regime stable -policy Nearest -seed 1 -speed 4 -autoplay
     /// -screenshot shot.png -screenshotAt 20 -fpsLog fps.txt -quitAfter 30 -select FC-D -diagLog diag.txt
+    /// -skipToEndAt 10 -recordFrames dir -recordFrom 6 -recordEvery 4 -recordCount 120
     /// Does nothing in the Editor unless arguments are given.
     /// </summary>
     public sealed class DemoAutomation : MonoBehaviour
@@ -33,10 +34,32 @@ namespace Fulfilment.Presentation
         private float worstFrameAt;
         private string diagPath;
         private string selectCode;
+        private float skipToEndAt = -1f;
+        private string recordDir;
+        private float recordFrom;
+        private int recordEvery = 4;
+        private int recordCount;
+        private int recorded;
+        private int frameCounter;
 
         private void Start()
         {
             string[] args = Environment.GetCommandLineArgs();
+
+            // Week 3 lab: -week3lab opens the Stay on Platform scene (the unchanged lecture scripts).
+            if (Array.IndexOf(args, "-week3lab") >= 0)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Week3_StayOnPlatform");
+                return;
+            }
+
+            // Headless experiment in the player: -batchmode -nographics -experiment vize_prelim [-out dir]
+            string experiment = Arg(args, "-experiment");
+            if (experiment != null)
+            {
+                RunExperimentAndQuit(experiment, Arg(args, "-out"));
+                return;
+            }
             string scenario = Arg(args, "-scenario"), regime = Arg(args, "-regime"), policy = Arg(args, "-policy"), seed = Arg(args, "-seed");
             if (scenario != null || regime != null || policy != null || seed != null)
                 runner.Configure(scenario ?? runner.Scenario, regime ?? runner.Regime, policy ?? runner.Policy,
@@ -45,6 +68,17 @@ namespace Fulfilment.Presentation
             string speed = Arg(args, "-speed");
             if (speed != null) runner.SetSpeed(float.Parse(speed, CultureInfo.InvariantCulture));
             if (Array.IndexOf(args, "-autoplay") >= 0) runner.Play();
+            skipToEndAt = ParseFloat(Arg(args, "-skipToEndAt"), -1f);
+
+            // -recordFrames dir -recordFrom 6 -recordEvery 4 -recordCount 120: numbered PNGs for a demo GIF.
+            recordDir = Arg(args, "-recordFrames");
+            if (recordDir != null)
+            {
+                Directory.CreateDirectory(recordDir);
+                recordFrom = ParseFloat(Arg(args, "-recordFrom"), 6f);
+                recordEvery = (int)ParseFloat(Arg(args, "-recordEvery"), 4f);
+                recordCount = (int)ParseFloat(Arg(args, "-recordCount"), 120f);
+            }
 
             screenshotPath = Arg(args, "-screenshot");
             screenshotAt = ParseFloat(Arg(args, "-screenshotAt"), screenshotPath != null ? 5f : -1f);
@@ -73,6 +107,15 @@ namespace Fulfilment.Presentation
                 if (dt > worstFrame) { worstFrame = dt; worstFrameAt = elapsed; }
             }
 
+            if (skipToEndAt >= 0f && elapsed >= skipToEndAt)
+            {
+                runner.SkipToEnd();
+                skipToEndAt = -1f;
+            }
+
+            if (recordDir != null && recorded < recordCount && elapsed >= recordFrom && frameCounter++ % recordEvery == 0)
+                ScreenCapture.CaptureScreenshot(Path.Combine(recordDir, $"frame_{recorded++:0000}.png"));
+
             if (screenshotPath != null && !shotTaken && elapsed >= screenshotAt)
             {
                 ScreenCapture.CaptureScreenshot(screenshotPath);
@@ -86,6 +129,23 @@ namespace Fulfilment.Presentation
                 Application.Quit();
                 quitAfter = -1f;
             }
+        }
+
+        private static void RunExperimentAndQuit(string name, string outDir)
+        {
+            int exitCode = 0;
+            try
+            {
+                outDir ??= Path.Combine(Path.GetDirectoryName(Application.dataPath) ?? ".", "results", name);
+                var results = ExperimentLauncher.Run(name, outDir, ExperimentLauncher.FromBuildInfo(), line => Debug.Log("[Experiment] " + line));
+                Debug.Log($"[Experiment] done: {results.Count} episodes → {outDir}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[Experiment] FAILED " + e);
+                exitCode = 1;
+            }
+            Application.Quit(exitCode);
         }
 
         private void WriteDiagnostics()

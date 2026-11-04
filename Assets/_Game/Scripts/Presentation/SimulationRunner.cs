@@ -78,12 +78,15 @@ namespace Fulfilment.Presentation
             splitPenalty = Mathf.Max(0f, splitPenaltyValue);
         }
 
+        /// <summary>A fresh setup identical to the running episode's (for headless comparisons and replays).</summary>
+        public EpisodeSetup CurrentSetup() =>
+            Configs.Setup(scenario, regime, seed, stockMultiplier, splitPenalty >= 0f ? splitPenalty : (double?)null);
+
         public void ResetEpisode()
         {
             IsRunning = false;
             accumulator = 0.0;
-            EpisodeSetup setup = Configs.Setup(scenario, regime, seed, stockMultiplier, splitPenalty >= 0f ? splitPenalty : (double?)null);
-            Engine = new SimulationEngine(setup, Configs.CreatePolicy(policy));
+            Engine = new SimulationEngine(CurrentSetup(), Configs.CreatePolicy(policy));
             EpisodeStarted?.Invoke(Engine);
         }
 
@@ -110,6 +113,15 @@ namespace Fulfilment.Presentation
         }
 
         public void SetSpeed(float speed) => Speed = Mathf.Max(0.1f, speed);
+
+        /// <summary>Runs the rest of the episode immediately (views still receive every step's events).</summary>
+        public void SkipToEnd()
+        {
+            Pause();
+            accumulator = 0.0;
+            while (Engine != null && !Engine.IsFinished)
+                Advance();
+        }
 
         private void Update()
         {

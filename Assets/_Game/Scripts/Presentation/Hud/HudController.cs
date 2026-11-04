@@ -40,6 +40,7 @@ namespace Fulfilment.Presentation
         private int trendService;
         private int trendStockout;
         private bool cardsDirty;
+        private SummaryPanel summary;
         private readonly List<(Label label, Transform target, Vector3 offset)> mapLabels = new List<(Label, Transform, Vector3)>();
         private float refreshTimer;
         private bool labelsDirty;
@@ -84,6 +85,8 @@ namespace Fulfilment.Presentation
             if (sidePanel != null || runner == null || runner.Configs == null) return;
             sidePanel = new SidePanel(runner);
             root.Add(sidePanel.Root);
+            summary = new SummaryPanel(runner);
+            root.Add(summary.Root); // last child: drawn above every other panel
         }
 
         // ---------------------------------------------------------------- layout
@@ -102,6 +105,7 @@ namespace Fulfilment.Presentation
             bar.Add(playButton);
             bar.Add(ToolButton("⏭ Adım", () => runner.StepOnce()));
             bar.Add(ToolButton("Sıfırla", () => runner.ResetEpisode()));
+            bar.Add(ToolButton("Sona atla", () => runner.SkipToEnd()));
 
             var speeds = new VisualElement();
             speeds.AddToClassList("speed-group");
@@ -197,6 +201,7 @@ namespace Fulfilment.Presentation
             statusLabel.text = "";
             EnsureSidePanel();
             sidePanel?.SyncFromRunner();
+            summary?.Hide();
             cardsDirty = true;
             trend.ClearData();
             trend.Capacity = engine.EpisodeTicks / SimTime.TicksPerHour + 1;
@@ -206,8 +211,9 @@ namespace Fulfilment.Presentation
 
         private void OnEpisodeFinished(SimulationEngine engine)
         {
-            statusLabel.text = "Episode tamamlandı (özet ekranı S5'te)";
+            statusLabel.text = "Episode tamamlandı";
             Refresh();
+            summary?.Show(engine);
         }
 
         private void RebuildMapLabels()
