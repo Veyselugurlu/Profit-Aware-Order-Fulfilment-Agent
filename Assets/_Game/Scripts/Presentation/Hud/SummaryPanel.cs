@@ -134,7 +134,7 @@ namespace Fulfilment.Presentation
             line.Add(Cell("", "summary-label"));
             foreach (string p in policies)
             {
-                Label c = Cell(p == runner.Policy ? $"{p} (bu çalıştırma)" : p, "summary-value");
+                Label c = Cell(p == runner.Policy ? $"{p}\n(bu çalıştırma)" : p, "summary-value"); // one line would overflow the column
                 c.EnableInClassList("current", p == runner.Policy);
                 line.Add(c);
             }
